@@ -1,59 +1,50 @@
-import React from 'react';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
-
-import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
-
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
+import React, { useState } from 'react';
+import { StyleSheet } from 'react-native';
+import { BottomNavigation } from 'react-native-paper';
+import { useTheme } from "../../constants/temas/ThemeContext";
+import TabOneScreen from '.';
+import TabTwoScreen from './profile';
+import Recomendations from './recomendations';
+import { StatusBar } from 'expo-status-bar';
+import Library from './library';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const { theme, themeName } = useTheme();
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    { key: 'home', title: 'Home', focusedIcon: "home", unfocusedIcon: "home-outline" },
+    { key: 'recomendations', title: 'Recomendações', focusedIcon: "star", unfocusedIcon: "star-outline" },
+    { key: 'library', title: 'Biblioteca', focusedIcon: "book", unfocusedIcon: "book-outline" },
+    { key: 'tabTwo', title: 'Perfil', focusedIcon: "cog", unfocusedIcon: "cog-outline" },
+  ]);
+
+  const renderScene = BottomNavigation.SceneMap({
+    home: TabOneScreen,
+    tabTwo: TabTwoScreen,
+    recomendations: Recomendations,
+    library: Library,
+  });
+
+  const statusBarStyle = themeName === 'light' ? 'dark' : 'light';
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
-        }}
+    <>
+      <StatusBar style={statusBarStyle} />
+      <BottomNavigation
+        navigationState={{ index, routes }}
+        onIndexChange={setIndex}
+        renderScene={renderScene}
+        activeColor={theme.text}
+        inactiveColor={theme.text}
+        activeIndicatorStyle={{ backgroundColor: theme.details }}
+        barStyle={{ backgroundColor: theme.modalBackground }}
       />
-      <Tabs.Screen
-        name="two"
-        options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-        }}
-      />
-    </Tabs>
+    </>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
