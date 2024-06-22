@@ -287,12 +287,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     marginVertical: 5,
+    width: '80%',
+    alignSelf:'center'
   },
   toggleButton: {
     paddingVertical: 10,
     paddingHorizontal: 20,
     marginHorizontal: 10,
     borderRadius: 20,
+    flex: 1,
+    alignItems:'center'
   },
   toggleButtonText: {
     fontSize: 16,

@@ -165,41 +165,50 @@ const CustomModalBook: React.FC<CustomModalBookProps> = ({
             </Text> */}
 
             <View style={styles.modalButtonsContainerDetails}>
-              <CustomButton
-                onPress={() => {
-                  addLivroLido(book);
-                  onClose();
-                  if (removeFromLibrary === true) {
-                    removeLivroBiblioteca(book.id);
-                  }
-                  if (removeFromRecommended === true) {
-                    removeLivroRecomendados(book.id);
-                  }
-                }}
-                placeholder="Lido"
-                styleType={1}
-              />
-              {AddToLibrary === true && (
-                <CustomButton
-                  onPress={() => {
-                    addLivroBiblioteca(book);
-                    onClose();
-                    if (removeFromRecommended === true) {
-                      removeLivroRecomendados(book.id);
-                    }
-                  }}
-                  placeholder="Ler mais tarde"
-                  styleType={1}
-                />
+              {AddToLibrary === false && (
+                <>
+                  <CustomButton
+                    onPress={() => {
+                      addLivroLido(book);
+                      onClose();
+                      if (removeFromLibrary === true) {
+                        removeLivroBiblioteca(book.id);
+                      }
+                      if (removeFromRecommended === true) {
+                        removeLivroRecomendados(book.id);
+                      }
+                    }}
+                    placeholder="Lido"
+                    styleType={1}
+                  />
+                  <CustomButton
+                    onPress={onClose}
+                    placeholder="Fechar"
+                    styleType={2}
+                  />
+                </>
               )}
-            </View>
 
-            <View style={styles.modalButtonsContainer}>
-              <CustomButton
-                onPress={onClose}
-                placeholder="Fechar"
-                styleType={2}
-              />
+              {AddToLibrary === true && (
+                <>
+                  <CustomButton
+                    onPress={() => {
+                      addLivroBiblioteca(book);
+                      onClose();
+                      if (removeFromRecommended === true) {
+                        removeLivroRecomendados(book.id);
+                      }
+                    }}
+                    placeholder="Ler mais tarde"
+                    styleType={1}
+                  />
+                  <CustomButton
+                    onPress={onClose}
+                    placeholder="Fechar"
+                    styleType={2}
+                  />
+                </>
+              )}
             </View>
 
             <View style={styles.anuncioSection}>
