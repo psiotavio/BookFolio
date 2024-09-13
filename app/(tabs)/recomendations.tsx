@@ -1,27 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Image,
   FlatList,
   Text,
   View,
-  ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
-import SearchBar from "../../components/MyComponents/SearchBar/SearchBar";
 import { useTheme } from "../../constants/temas/ThemeContext";
 import { useUser } from "../../contexts/UserContext";
 import { Livro } from "../../interfaces/Livro";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import CustomModalBook from "../../components/MyComponents/CustomModalBook/CustomModalBook";
 import CustomPhoto from "../../components/MyComponents/CustomPhoto/CustomPhoto";
-import FiveStarReview from "../../components/MyComponents/FiveStarComponent/FiveStarComponent";
-import ModalSliderReview from "../../components/MyComponents/CustomModalBook/ModalSlider";
-import CustomModalBookLido from "@/components/MyComponents/CustomModalBook/CustomModalBookLido";
 import CustomButton from "@/components/MyComponents/CustomButton.tsx/CustomButton";
+import ButtonGenre from "@/components/MyComponents/CustomButton.tsx/CustomGenreButton";
+import { fetchBookRecommendationsByGenre } from "@/services/BookService";
 
 const monthNames = [
   "Janeiro",
@@ -43,6 +38,45 @@ export default function Recomendations() {
   const { livrosRecomendados } = useUser();
   const [selectedBook, setSelectedBook] = useState<Livro | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [recommendedBooks, setRecommendedBooks] =
+    useState<Livro[]>(livrosRecomendados);
+  const [selectedGenre, setSelectedGenre] = useState("Recomendado para você");
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      if (selectedGenre === "Recomendado para você") {
+        setRecommendedBooks(livrosRecomendados); // Mostrar lista atual de livros recomendados
+        return;
+      }
+      setLoading(true);
+      const books = await fetchBookRecommendationsByGenre([selectedGenre]);
+      setRecommendedBooks(books);
+      setLoading(false);
+    };
+
+    fetchRecommendations();
+  }, [selectedGenre]);
+
+  const loadMoreBooks = async () => {
+    if (loading || selectedGenre === "Recomendado para você") return;
+
+    setLoading(true);
+    try {
+      const newPage = page + 1;
+      const books = await fetchBookRecommendationsByGenre(
+        [selectedGenre],
+        newPage
+      );
+      setRecommendedBooks((prevBooks) => [...prevBooks, ...books]);
+      setPage(newPage);
+    } catch (error) {
+      console.error("Error loading more books:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleBookPress = (book: Livro) => {
     setSelectedBook(book);
@@ -86,17 +120,47 @@ export default function Recomendations() {
         </View>
 
         <View style={styles.recommendedView}>
-          <Text style={[styles.listTitle, { color: theme.text }]}>
-            Livros Recomendados
-          </Text>
-            <FlatList
-              data={livrosRecomendados}
-              renderItem={renderBookItem}
-              keyExtractor={(item) => item.id}
-              numColumns={3}
-              style={styles.list}
-              contentContainerStyle={styles.containerGrid}
-            />
+          <View style={styles.recommendedFilterSection}>
+             <Text style={[styles.listTitle, { color: theme.text }]}>
+              {selectedGenre === "Recomendado para você"
+                ? "Livros Recomendados"
+                : `Livros do Gênero: ${selectedGenre}`}
+            </Text> 
+            <View style={{ width: "80%", alignSelf: "center" }}>
+              <View style={[styles.recomendationButton, { backgroundColor: theme.details}]}>
+                <Text style={[styles.buttonText, {color: theme.textButtons}]}>
+                  Recomendados para Você
+                </Text>
+              </View>
+              {/* <ButtonGenre
+                selectedGenre={selectedGenre}
+                onSelectGenre={(genre) => {
+                  setSelectedGenre(genre);
+                  setPage(1); // Reset page when changing genre
+                }}
+              /> */}
+            </View>
+          </View>
+          <FlatList
+            data={recommendedBooks}
+            renderItem={renderBookItem}
+            keyExtractor={(item) => item.id}
+            numColumns={3}
+            style={styles.list}
+            contentContainerStyle={styles.containerGrid}
+            onEndReachedThreshold={0.5}
+            onEndReached={loadMoreBooks}
+            ListFooterComponent={() =>
+              loading ? (
+                <ActivityIndicator size="large" color={theme.text} />
+              ) : null
+            }
+            ListEmptyComponent={() => (
+              <Text style={[styles.emptyMessage, { color: theme.text }]}>
+                Nenhum livro encontrado.
+              </Text>
+            )}
+          />
         </View>
       </View>
       {selectedBook && (
@@ -180,6 +244,28 @@ const styles = StyleSheet.create({
   },
   recommendedView: {
     flex: 1,
-    marginBottom: -25
+    marginBottom: -25,
   },
+  emptyMessage: {
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 16,
+  },
+  recommendedFilterSection: {
+    paddingHorizontal: 10,
+    flexDirection: "column",
+    gap: 20,
+  },
+  recomendationButton:{
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    marginHorizontal: 5,
+    marginTop: 15
+  },
+  buttonText:{
+    fontSize: 16,
+    fontWeight: 'bold',
+  }
 });

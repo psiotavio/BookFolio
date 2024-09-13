@@ -39,6 +39,8 @@ const monthNames = [
   "Dezembro",
 ];
 
+
+
 export default function TabOneScreen() {
   const { theme } = useTheme();
   const { livrosLidos, updateLivroReview } = useUser();
@@ -46,6 +48,7 @@ export default function TabOneScreen() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentRating, setCurrentRating] = useState(0);
   const [showBest, setShowBest] = useState(false);
+
 
   const handleBookPress = (book: Livro) => {
     setSelectedBook(book);
@@ -65,13 +68,13 @@ export default function TabOneScreen() {
     closeModal();
   };
 
-  const renderBookItem = ({ item, index }: { item: Livro, index: number }) => (
+  const renderBookItem = ({ item, index }: { item: Livro; index: number }) => (
     <TouchableOpacity onPress={() => handleBookPress(item)}>
       <View style={{ marginHorizontal: 5, alignItems: "center" }}>
-        {showBest && ( 
-         <Text style={[styles.bestText, { color: theme.textButtons }]}>
-         {index + 1}
-       </Text>
+        {showBest && (
+          <Text style={[styles.bestText, { color: theme.textButtons }]}>
+            {index + 1}
+          </Text>
         )}
         <CustomPhoto
           uri={
@@ -153,21 +156,39 @@ export default function TabOneScreen() {
 
         <ScrollView>
           <View style={styles.booksList}>
-            {Object.keys(groupedBooks).map((monthYear) => (
-              <View key={monthYear} style={{ marginVertical: 20 }}>
-                <Text style={[styles.listTitle, { color: theme.text }]}>
-                  Livros Lidos em {monthYear}
-                </Text>
-                <FlatList
-                  data={groupedBooks[monthYear]}
-                  renderItem={(props) => renderBookItem({ ...props, index: props.index })}
-                  keyExtractor={(item) => item.id}
-                  horizontal
-                  style={styles.list}
-                  showsHorizontalScrollIndicator={false}
-                />
-              </View>
-            ))}
+            {Object.keys(groupedBooks)
+              .sort((a, b) => {
+                const [monthA, yearA] = a.split(" ");
+                const [monthB, yearB] = b.split(" ");
+
+                const dateA = new Date(
+                  parseInt(yearA, 10),
+                  monthNames.indexOf(monthA)
+                );
+                const dateB = new Date(
+                  parseInt(yearB, 10),
+                  monthNames.indexOf(monthB)
+                );
+
+                return dateB.getTime() - dateA.getTime();
+              })
+              .map((monthYear) => (
+                <View key={monthYear} style={{ marginVertical: 20 }}>
+                  <Text style={[styles.listTitle, { color: theme.text }]}>
+                    Livros Lidos em {monthYear}
+                  </Text>
+                  <FlatList
+                    data={groupedBooks[monthYear]}
+                    renderItem={(props) =>
+                      renderBookItem({ ...props, index: props.index })
+                    }
+                    keyExtractor={(item) => item.id}
+                    horizontal
+                    style={styles.list}
+                    showsHorizontalScrollIndicator={false}
+                  />
+                </View>
+              ))}
           </View>
         </ScrollView>
       </View>
@@ -246,7 +267,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   toggleContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 10,
     right: 15,
     zIndex: 9999,
@@ -255,11 +276,11 @@ const styles = StyleSheet.create({
     fontSize: 120,
     fontWeight: "bold",
     marginBottom: 5,
-    position: 'absolute',
+    position: "absolute",
     bottom: 10,
     right: 10,
     zIndex: 2,
-    textShadowColor: '#000',
+    textShadowColor: "#000",
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 5,
   },

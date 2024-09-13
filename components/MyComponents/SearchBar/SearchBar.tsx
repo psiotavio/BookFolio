@@ -100,6 +100,7 @@ const SearchBar = () => {
           isVisible={isModalVisible}
           book={selectedBook}
           onClose={closeModal}
+          AddToLibrary={false}
         />
 
 

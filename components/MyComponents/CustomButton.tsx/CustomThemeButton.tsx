@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useTheme, ThemeName } from "../../../constants/temas/ThemeContext";
+import CustomButton from "./CustomButton";
 
 const CustomThemeButton: React.FC = () => {
   const { theme, setThemeName, themeName } = useTheme();
@@ -19,13 +20,12 @@ const CustomThemeButton: React.FC = () => {
   };
 
   return (
-    <View>
-      <TouchableOpacity
+    <View style={{width: '100%'}}>
+      <CustomButton
         onPress={() => setModalVisible(true)}
-        style={[{ backgroundColor: theme.details }, styles.button]}
-      >
-        <Text style={styles.buttonText}>{`Change Theme: ${themeName}`}</Text>
-      </TouchableOpacity>
+        placeholder={`Change Theme: ${themeName}`}
+        styleType={1}
+      ></CustomButton>
       <Modal
         animationType="slide"
         transparent={true}
@@ -93,6 +93,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     paddingHorizontal: 35,
     justifyContent: "center",
+    width: "100%",
+    flexShrink: 1, // Permite que os botões encolham igualmente
   },
   text: {
     fontSize: 18,
