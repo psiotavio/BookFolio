@@ -22,7 +22,9 @@ import FiveStarReview from "../../components/MyComponents/FiveStarComponent/Five
 import ModalSliderReview from "../../components/MyComponents/CustomModalBook/ModalSlider";
 import CustomModalBookLido from "@/components/MyComponents/CustomModalBook/CustomModalBookLido";
 import CustomButton from "@/components/MyComponents/CustomButton.tsx/CustomButton";
+import CustomModalAddBook from "@/components/MyComponents/CustomModalBook/CustomModalAddBook";
 import { CheckBox } from "react-native-elements";
+import { Ionicons } from '@expo/vector-icons'; // Importando o ícone
 
 const monthNames = [
   "Janeiro",
@@ -39,8 +41,6 @@ const monthNames = [
   "Dezembro",
 ];
 
-
-
 export default function TabOneScreen() {
   const { theme } = useTheme();
   const { livrosLidos, updateLivroReview } = useUser();
@@ -48,11 +48,11 @@ export default function TabOneScreen() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentRating, setCurrentRating] = useState(0);
   const [showBest, setShowBest] = useState(false);
-
+  const [isAddBookModalVisible, setIsAddBookModalVisible] = useState(false); // Estado para controlar o modal de adicionar livro
 
   const handleBookPress = (book: Livro) => {
     setSelectedBook(book);
-    setCurrentRating(book.Review || 0); // Supondo que 'Review' é a propriedade de avaliação
+    setCurrentRating(book.Review || 0); 
     setIsModalVisible(true);
   };
 
@@ -66,6 +66,11 @@ export default function TabOneScreen() {
       updateLivroReview(selectedBook.id, newRating);
     }
     closeModal();
+  };
+
+  const handleAddBook = (newBook: any) => {
+    console.log("Livro adicionado:", newBook);
+    setIsAddBookModalVisible(false);
   };
 
   const renderBookItem = ({ item, index }: { item: Livro; index: number }) => (
@@ -100,7 +105,6 @@ export default function TabOneScreen() {
       groupedBooks[monthYear].push(book);
     });
 
-    // Ordene os livros dentro de cada mês/ano se o toggle "Melhores" estiver ativado
     if (showBest) {
       for (const key in groupedBooks) {
         groupedBooks[key].sort((a, b) => (b.Review ?? 0) - (a.Review ?? 0));
@@ -191,16 +195,32 @@ export default function TabOneScreen() {
               ))}
           </View>
         </ScrollView>
-      </View>
-      {selectedBook && (
-        <CustomModalBookLido
-          isVisible={isModalVisible}
-          book={selectedBook}
-          onClose={closeModal}
-          currentRating={currentRating}
-          onSave={handleSaveRating}
+
+        {selectedBook && (
+          <CustomModalBookLido
+            isVisible={isModalVisible}
+            book={selectedBook}
+            onClose={closeModal}
+            currentRating={currentRating}
+            onSave={handleSaveRating}
+          />
+        )}
+
+        {/* Botão flutuante de adicionar livro */}
+        <TouchableOpacity
+          style={styles.floatingButton}
+          onPress={() => setIsAddBookModalVisible(true)}
+        >
+          <Ionicons name="add" size={32} color="white" />
+        </TouchableOpacity>
+
+        {/* Modal de adicionar livro */}
+        <CustomModalAddBook
+          isVisible={isAddBookModalVisible}
+          onClose={() => setIsAddBookModalVisible(false)}
+          onSave={handleAddBook}
         />
-      )}
+      </View>
     </SafeAreaView>
   );
 }
@@ -256,16 +276,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: "center",
   },
-  bookTitle: {
-    fontSize: 16,
-  },
-  bookCover: {
-    width: 125,
-    height: 180,
-    resizeMode: "cover",
-    marginHorizontal: 5,
-    borderRadius: 5,
-  },
   toggleContainer: {
     position: "absolute",
     top: 10,
@@ -283,5 +293,21 @@ const styles = StyleSheet.create({
     textShadowColor: "#000",
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 5,
+  },
+  floatingButton: {
+    position: "absolute",
+    bottom: 30,
+    right: 30,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "#ff7b00ff",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 5,
+    elevation: 5,
   },
 });

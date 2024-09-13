@@ -17,6 +17,7 @@ import CustomPhoto from "../CustomPhoto/CustomPhoto";
 import FiveStarReview from "../FiveStarComponent/FiveStarComponent";
 import SliderReview from "../SliderReview/SliderReview";
 import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons } from '@expo/vector-icons'; // Importando o ícone do lixo
 
 interface CustomModalBookProps {
   isVisible: boolean;
@@ -33,9 +34,9 @@ const CustomModalBookLido: React.FC<CustomModalBookProps> = ({
   currentRating,
   onSave,
 }) => {
-  const { addLivroLido, addLivroBiblioteca } = useUser();
+  const { removeLivroLido } = useUser(); // Usar a função de remover livro
   const [rating, setRating] = useState(currentRating);
-  const { theme, themeName } = useTheme();
+  const { theme } = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
 
   if (!book) {
@@ -62,6 +63,11 @@ const CustomModalBookLido: React.FC<CustomModalBookProps> = ({
       ? book.description!.substring(0, 400) + "..."
       : book.description;
 
+  const handleRemoveBook = () => {
+    removeLivroLido(book.id); // Remove o livro da lista de lidos
+    onClose(); // Fecha o modal após a remoção
+  };
+
   return (
     <Modal
       visible={isVisible}
@@ -87,6 +93,14 @@ const CustomModalBookLido: React.FC<CustomModalBookProps> = ({
               { backgroundColor: theme.modalBackground },
             ]}
           >
+            {/* Ícone de remover no canto superior direito */}
+            <TouchableOpacity
+              style={styles.trashIcon}
+              onPress={handleRemoveBook}
+            >
+              <Ionicons name="trash" size={24} color={theme.errorColor} />
+            </TouchableOpacity>
+
             <View style={styles.bookHeader}>
               <CustomPhoto
                 uri={
@@ -117,11 +131,10 @@ const CustomModalBookLido: React.FC<CustomModalBookProps> = ({
               </Text>
               {!isExpanded && book.description!.length > 400 && (
                 <View>
-                <LinearGradient
-                  colors={["transparent", theme.text]}
-                  style={styles.gradient}
-                >
-                </LinearGradient>
+                  <LinearGradient
+                    colors={["transparent", theme.text]}
+                    style={styles.gradient}
+                  />
                   <TouchableOpacity onPress={toggleExpansion}>
                     <Text style={[styles.readMore, { color: theme.text }]}>
                       Ver mais
@@ -139,7 +152,7 @@ const CustomModalBookLido: React.FC<CustomModalBookProps> = ({
             </View>
 
             <Text style={[styles.bookDetails, { color: theme.text }]}>
-            Editora: {book.publisher}
+              Editora: {book.publisher}
             </Text>
             <Text style={[styles.bookDetails, { color: theme.text }]}>
               Lançamento: {book.publishedDate}
@@ -147,7 +160,6 @@ const CustomModalBookLido: React.FC<CustomModalBookProps> = ({
             <Text style={[styles.bookDetails, { color: theme.text }]}>
               Páginas: {book.pageCount}
             </Text>
-
 
             <View style={styles.ratingSection}>
               <Text
@@ -196,7 +208,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
   modalScrollViewContent: {
     height: "55%",
     width: "100%",
@@ -205,12 +216,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 50,
   },
-  bookCover: {
-    width: 130,
-    height: 200,
-    resizeMode: "cover",
-    marginBottom: 20,
-    borderRadius: 5,
+  trashIcon: {
+    position: "absolute",
+    top: 30,
+    right: 35,
+    zIndex: 1,
+  },
+  bookHeader: {
+    display: "flex",
+    flexDirection: "row",
+    width: "90%",
+    gap: 15,
+    alignItems: "center",
+  },
+  bookTitleAndAuthors: {
+    gap: 5,
+    flexDirection: "column",
+    alignItems: "flex-start",
+    display: "flex",
   },
   bookTitle: {
     fontSize: 20,
@@ -234,24 +257,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 5,
   },
-  modalButtonsContainer: {
-    alignSelf: "center",
-    flexDirection: "row",
-    gap: 20,
-  },
-  bookHeader: {
-    display: "flex",
-    flexDirection: "row",
-    width: "90%",
-    gap: 15,
-    alignItems: "center",
-  },
-  bookTitleAndAuthors: {
-    gap: 5,
-    flexDirection: "column",
-    alignItems: "flex-start",
-    display: "flex",
-  },
   ratingSection: {
     width: "100%",
     justifyContent: "center",
@@ -269,20 +274,24 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 100,
-    opacity: 0.3
+    opacity: 0.3,
   },
   readMore: {
     fontSize: 16,
     textAlign: "center",
     paddingVertical: 4,
   },
-
   anuncioSection: {
     height: 70,
     backgroundColor: "grey",
     marginVertical: 20,
     alignItems: "center",
     justifyContent: "center",
+  },
+  modalButtonsContainer: {
+    alignSelf: "center",
+    flexDirection: "row",
+    gap: 20,
   },
 });
 
