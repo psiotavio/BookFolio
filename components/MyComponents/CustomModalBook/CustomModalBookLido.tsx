@@ -18,6 +18,7 @@ import FiveStarReview from "../FiveStarComponent/FiveStarComponent";
 import SliderReview from "../SliderReview/SliderReview";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from '@expo/vector-icons'; // Importando o ícone do lixo
+import { useDictionary } from "../../../contexts/DictionaryContext"; // Hook de tradução
 
 interface CustomModalBookProps {
   isVisible: boolean;
@@ -37,6 +38,7 @@ const CustomModalBookLido: React.FC<CustomModalBookProps> = ({
   const { removeLivroLido } = useUser(); // Usar a função de remover livro
   const [rating, setRating] = useState(currentRating);
   const { theme } = useTheme();
+  const { t } = useDictionary(); // Hook de tradução
   const [isExpanded, setIsExpanded] = useState(false);
 
   if (!book) {
@@ -119,7 +121,7 @@ const CustomModalBookLido: React.FC<CustomModalBookProps> = ({
                 </Text>
                 <CustomButton
                   onPress={handleBuyOnAmazon}
-                  placeholder="Comprar na Amazon"
+                  placeholder={t("buyOnAmazon")} // Tradução
                   styleType={3}
                 />
               </View>
@@ -137,7 +139,7 @@ const CustomModalBookLido: React.FC<CustomModalBookProps> = ({
                   />
                   <TouchableOpacity onPress={toggleExpansion}>
                     <Text style={[styles.readMore, { color: theme.text }]}>
-                      Ver mais
+                      {t("showMore")} {/* Tradução */}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -145,27 +147,27 @@ const CustomModalBookLido: React.FC<CustomModalBookProps> = ({
               {isExpanded && (
                 <TouchableOpacity onPress={toggleExpansion}>
                   <Text style={[styles.readMore, { color: theme.text }]}>
-                    Ver menos
+                    {t("showLess")} {/* Tradução */}
                   </Text>
                 </TouchableOpacity>
               )}
             </View>
 
             <Text style={[styles.bookDetails, { color: theme.text }]}>
-              Editora: {book.publisher}
+              {t("publisher")}: {book.publisher} {/* Tradução */}
             </Text>
             <Text style={[styles.bookDetails, { color: theme.text }]}>
-              Lançamento: {book.publishedDate}
+              {t("releaseDate")}: {book.publishedDate} {/* Tradução */}
             </Text>
             <Text style={[styles.bookDetails, { color: theme.text }]}>
-              Páginas: {book.pageCount}
+              {t("pageCount")}: {book.pageCount} {/* Tradução */}
             </Text>
 
             <View style={styles.ratingSection}>
               <Text
                 style={{ color: theme.text, fontSize: 20, fontWeight: "bold" }}
               >
-                Avalie o Livro
+                {t("rateBook")} 
               </Text>
               <View style={{ transform: "scale(1.3)" }}>
                 <FiveStarReview rating={rating} />
@@ -177,12 +179,12 @@ const CustomModalBookLido: React.FC<CustomModalBookProps> = ({
               <View style={styles.modalButtonsContainer}>
                 <CustomButton
                   onPress={onClose}
-                  placeholder={"Cancelar"}
+                  placeholder={t("cancel")} 
                   styleType={2}
                 />
                 <CustomButton
                   onPress={handleSave}
-                  placeholder={"Confirmar"}
+                  placeholder={t("confirm")} 
                   styleType={1}
                 />
               </View>
@@ -191,7 +193,7 @@ const CustomModalBookLido: React.FC<CustomModalBookProps> = ({
             <View style={styles.anuncioSection}>
               <CustomButton
                 onPress={() => {}}
-                placeholder={"TESTE ANUNCIO"}
+                placeholder={t("testAd")} // Tradução
                 styleType={3}
               ></CustomButton>
             </View>

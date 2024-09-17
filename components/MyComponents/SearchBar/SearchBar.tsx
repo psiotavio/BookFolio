@@ -9,12 +9,12 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
-  ImageBackground,
 } from "react-native";
 import { fetchBookDetails } from "../../../services/BookService"; // Sua função de busca de livros
 import { Livro } from "../../../interfaces/Livro"; // Importando o tipo Livro
 import CustomModalBook from "../CustomModalBook/CustomModalBook";
 import { useTheme } from "../../../constants/temas/ThemeContext";
+import { useDictionary } from "@/contexts/DictionaryContext"; // Importando o hook de tradução
 
 const SearchBar = () => {
   const [query, setQuery] = useState<string>("");
@@ -22,13 +22,13 @@ const SearchBar = () => {
   const [isKeyboardDismissed, setIsKeyboardDismissed] = useState<boolean>(false);
   const [selectedBook, setSelectedBook] = useState<Livro | null>(null); // Estado para o livro selecionado
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false); // Estado para a visibilidade do modal
-  const { theme, themeName } = useTheme();
-  
+  const { theme } = useTheme();
+  const { t, language } = useDictionary(); // Usando o idioma do contexto
 
   useEffect(() => {
     if (query.length > 2) {
       const delayDebounce = setTimeout(() => {
-        fetchBookDetails(query).then((fetchedBooks: Livro[]) => {
+        fetchBookDetails(query, language).then((fetchedBooks: Livro[]) => {
           setBooks(fetchedBooks);
         });
       }, 500);
@@ -37,18 +37,17 @@ const SearchBar = () => {
     } else if (query.length === 0) {
       setBooks([]); // Limpa a lista de livros se a consulta estiver vazia
     }
-  }, [query]);
+  }, [query, language]); // Adiciona `language` como dependência
 
   const handleOutsidePress = () => {
     if (isKeyboardDismissed) {
       setBooks([]); // Recolhe o dropdown na segunda vez que é clicado fora
-      setIsKeyboardDismissed(false); // Reset estado
+      setIsKeyboardDismissed(false); // Reseta estado
     } else {
       Keyboard.dismiss(); // Recolhe o teclado na primeira vez que é clicado fora
       setIsKeyboardDismissed(true); // Define estado para indicar que o teclado foi recolhido
     }
   };
-
 
   const handleBookPress = (book: Livro) => {
     setSelectedBook(book);
@@ -65,11 +64,11 @@ const SearchBar = () => {
       <View style={styles.container}>
         <TextInput
           style={[styles.searchInput , {backgroundColor: theme.modalBackground, color: theme.text, borderColor: theme.details}]}
-          placeholder="Search for books..."
+          placeholder={t("searchBooksPlaceholder")} // Adiciona tradução ao placeholder
           placeholderTextColor={theme.text}
           value={query}
           onChangeText={setQuery}
-          onFocus={() => setIsKeyboardDismissed(false)} // Reset estado ao focar na barra de pesquisa
+          onFocus={() => setIsKeyboardDismissed(false)} // Reseta estado ao focar na barra de pesquisa
         />
         {books.length > 0 && (
           <FlatList
@@ -102,8 +101,6 @@ const SearchBar = () => {
           onClose={closeModal}
           AddToLibrary={false}
         />
-
-
       </View>
     </TouchableWithoutFeedback>
   );

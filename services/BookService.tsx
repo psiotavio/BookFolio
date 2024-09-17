@@ -2,11 +2,11 @@ import { Livro } from "../interfaces/Livro"; // Asegure-se de que o caminho até
 
 const API_KEY = "AIzaSyBkHfmfEHDKGhGrkk_J0LYNeTCy2HKwV2c";  // Utilize sua chave de API válida
 
-const fetchBookDetails = async (bookTitle: string): Promise<Livro[]> => {
+const fetchBookDetails = async (bookTitle: string, language: string): Promise<Livro[]> => {
   const query = encodeURI(bookTitle);
   try {
     const response = await fetch(
-      `https://www.googleapis.com/books/v1/volumes?q=${query}&key=${API_KEY}&maxResults=30&printType=books&orderBy=relevance&langRestrict=pt`
+      `https://www.googleapis.com/books/v1/volumes?q=${query}&key=${API_KEY}&maxResults=30&printType=books&orderBy=relevance&langRestrict=${language}`
     );
     const data = await response.json();
     if (!data.items) {
@@ -33,12 +33,12 @@ const fetchBookDetails = async (bookTitle: string): Promise<Livro[]> => {
         previewLink: item.volumeInfo.previewLink,
         similarBooks: [],
         Review: 0,
-        amazonLink: `https://www.amazon.com.br/s?k=${encodeURIComponent(item.volumeInfo.title + ' ' + (item.volumeInfo.authors ? item.volumeInfo.authors.join(' ') : ''))}&linkCode=ll2&tag=bookfolio-20&language=pt_BR&ref_=as_li_ss_tl`,
+        amazonLink: `https://www.amazon.com.br/s?k=${encodeURIComponent(item.volumeInfo.title + ' ' + (item.volumeInfo.authors ? item.volumeInfo.authors.join(' ') : ''))}&linkCode=ll2&tag=bookfolio-20&language=${language}&ref_=as_li_ss_tl`,
       };
 
       if (
         !uniqueBooks.has(book.title) &&
-        book.language === "pt-BR" &&
+        book.language === language &&
         book.imageLinks !== undefined
       ) {
         uniqueBooks.set(book.title, book);
@@ -56,13 +56,13 @@ const fetchBookDetails = async (bookTitle: string): Promise<Livro[]> => {
   }
 };
 
-const fetchBookRecommendations = async (authors: string[]): Promise<Livro[]> => {
+const fetchBookRecommendations = async (authors: string[], language: string): Promise<Livro[]> => {
   try {
     const authorQuery = authors.map(author => `inauthor:${encodeURI(author)}`).join('+');
     const queryAuhtor = `${authorQuery}`;
 
     const response = await fetch(
-      `https://www.googleapis.com/books/v1/volumes?q=${queryAuhtor}&key=${API_KEY}&maxResults=30&printType=books&orderBy=relevance&langRestrict=pt`
+      `https://www.googleapis.com/books/v1/volumes?q=${queryAuhtor}&key=${API_KEY}&maxResults=30&printType=books&orderBy=relevance&langRestrict=${language}`
     );
     const data = await response.json();
     if (!data.items) {
@@ -88,13 +88,13 @@ const fetchBookRecommendations = async (authors: string[]): Promise<Livro[]> => 
         language: item.volumeInfo.language,
         previewLink: item.volumeInfo.previewLink,
         similarBooks: [],
-        amazonLink: `https://www.amazon.com.br/s?k=${encodeURIComponent(item.volumeInfo.title + ' ' + (item.volumeInfo.authors ? item.volumeInfo.authors.join(' ') : ''))}&linkCode=ll2&tag=bookfolio-20&language=pt_BR&ref_=as_li_ss_tl`,
+        amazonLink: `https://www.amazon.com.br/s?k=${encodeURIComponent(item.volumeInfo.title + ' ' + (item.volumeInfo.authors ? item.volumeInfo.authors.join(' ') : ''))}&linkCode=ll2&tag=bookfolio-20&language=${language}&ref_=as_li_ss_tl`,
         Review: 0,
       };
 
       if (
         !uniqueBooks.has(book.title) &&
-        book.language === "pt-BR" &&
+        book.language === language &&
         book.imageLinks !== undefined
       ) {
         uniqueBooks.set(book.title, book);
@@ -112,7 +112,7 @@ const fetchBookRecommendations = async (authors: string[]): Promise<Livro[]> => 
   }
 };
 
-const fetchBookRecommendationsByGenre = async (genres: string[], page: number = 1): Promise<Livro[]> => {
+const fetchBookRecommendationsByGenre = async (genres: string[], authors: string[], language: string, page: number = 1): Promise<Livro[]> => {
   try {
     const startIndex = (page - 1) * 18;
     const genreQuery = genres.map(genre => `subject:${encodeURI(genre)}`).join('+');
@@ -121,14 +121,16 @@ const fetchBookRecommendationsByGenre = async (genres: string[], page: number = 
     console.log(`Fetching books with query: ${queryGenre} (page: ${page})`);
 
     const response = await fetch(
-      `https://www.googleapis.com/books/v1/volumes?q=${queryGenre}&key=${API_KEY}&langRestrict=pt&maxResults=18&printType=books&orderBy=relevance&startIndex=${startIndex}`
+      `https://www.googleapis.com/books/v1/volumes?q=${queryGenre}&key=${API_KEY}&langRestrict=${language}&maxResults=18&printType=books&orderBy=relevance&startIndex=${startIndex}`
     );
     const data = await response.json();
     
     console.log('Data fetched from API:', data);
 
-    if (!data.items) {
-      return [];
+    // Se não houver livros retornados para o gênero, faz a busca pelos autores
+    if (data.totalItems === 0) {
+      console.log("No books found for genre, fetching recommendations by author...");
+      return fetchBookRecommendations(authors, language); // Chama a função para buscar por autor
     }
 
     const uniqueBooks = new Map<string, Livro>();
@@ -150,7 +152,7 @@ const fetchBookRecommendationsByGenre = async (genres: string[], page: number = 
         language: item.volumeInfo.language,
         previewLink: item.volumeInfo.previewLink,
         similarBooks: [],
-        amazonLink: `https://www.amazon.com.br/s?k=${encodeURIComponent(item.volumeInfo.title + ' ' + (item.volumeInfo.authors ? item.volumeInfo.authors.join(' ') : ''))}&linkCode=ll2&tag=bookfolio-20&language=pt_BR&ref_=as_li_ss_tl`,
+        amazonLink: `https://www.amazon.com.br/s?k=${encodeURIComponent(item.volumeInfo.title + ' ' + (item.volumeInfo.authors ? item.volumeInfo.authors.join(' ') : ''))}&linkCode=ll2&tag=bookfolio-20&language=${language}&ref_=as_li_ss_tl`,
         Review: 0,
       };
 
@@ -176,7 +178,6 @@ const fetchBookRecommendationsByGenre = async (genres: string[], page: number = 
     return [];
   }
 };
-
 
 
 export { fetchBookDetails, fetchBookRecommendations, fetchBookRecommendationsByGenre };

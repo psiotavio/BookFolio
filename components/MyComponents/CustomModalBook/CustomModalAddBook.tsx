@@ -16,7 +16,7 @@ import { useUser } from "../../../contexts/UserContext";
 import { Livro } from "../../../interfaces/Livro"; // Importando o tipo Livro
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
-
+import { useDictionary } from "../../../contexts/DictionaryContext"; // Hook de tradução
 
 interface CustomModalAddBookProps {
   isVisible: boolean;
@@ -31,6 +31,7 @@ const CustomModalAddBook: React.FC<CustomModalAddBookProps> = ({
 }) => {
   const { theme } = useTheme();
   const { addLivroLido } = useUser();
+  const { t } = useDictionary(); // Hook de tradução
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [pageCount, setPageCount] = useState("");
@@ -101,10 +102,10 @@ const CustomModalAddBook: React.FC<CustomModalAddBookProps> = ({
       >
         <ScrollView showsVerticalScrollIndicator={false}>
           <Text style={[styles.title, { color: theme.text }]}>
-            Não encontrou um livro?
+            {t('didntFindBook')}
           </Text>
           <Text style={[styles.subtitle, { color: theme.text }]}>
-            Adicionar Livro
+            {t('addBook')}
           </Text>
           <TouchableOpacity onPress={pickImage}>
             <View style={styles.imagePicker}>
@@ -112,14 +113,14 @@ const CustomModalAddBook: React.FC<CustomModalAddBookProps> = ({
                 <Image source={{ uri: imageUri }} style={styles.bookCover} />
               ) : (
                 <Text style={[styles.addPhotoText, { color: theme.text }]}>
-                  Adicionar capa
+                  {t('addCover')}
                 </Text>
               )}
             </View>
           </TouchableOpacity>
 
           <TextInput
-            placeholder="Título"
+            placeholder={t('title')}
             placeholderTextColor={theme.textSecondary}
             style={[
               styles.input,
@@ -129,7 +130,7 @@ const CustomModalAddBook: React.FC<CustomModalAddBookProps> = ({
             onChangeText={setTitle}
           />
           <TextInput
-            placeholder="Autor"
+            placeholder={t('author')}
             placeholderTextColor={theme.textSecondary}
             style={[
               styles.input,
@@ -139,7 +140,7 @@ const CustomModalAddBook: React.FC<CustomModalAddBookProps> = ({
             onChangeText={setAuthor}
           />
           <TextInput
-            placeholder="Qtd de Páginas"
+            placeholder={t('pageCount')}
             placeholderTextColor={theme.textSecondary}
             keyboardType="numeric"
             style={[
@@ -150,7 +151,7 @@ const CustomModalAddBook: React.FC<CustomModalAddBookProps> = ({
             onChangeText={setPageCount}
           />
           <TextInput
-            placeholder="Descrição (opcional)"
+            placeholder={t('descriptionOptional')}
             placeholderTextColor={theme.textSecondary}
             style={[
               styles.input,
@@ -161,7 +162,7 @@ const CustomModalAddBook: React.FC<CustomModalAddBookProps> = ({
             multiline
           />
           <TextInput
-            placeholder="Lançamento (opcional)"
+            placeholder={t('publishedDateOptional')}
             placeholderTextColor={theme.textSecondary}
             style={[
               styles.input,
@@ -171,7 +172,7 @@ const CustomModalAddBook: React.FC<CustomModalAddBookProps> = ({
             onChangeText={setPublishedDate}
           />
           <TextInput
-            placeholder="Editora (opcional)"
+            placeholder={t('publisherOptional')}
             placeholderTextColor={theme.textSecondary}
             style={[
               styles.input,
@@ -184,12 +185,12 @@ const CustomModalAddBook: React.FC<CustomModalAddBookProps> = ({
           <View style={styles.modalButtonsContainer}>
             <CustomButton
               onPress={handleSave}
-              placeholder="Salvar"
+              placeholder={t('save')}
               styleType={1}
             />
             <CustomButton
               onPress={onClose}
-              placeholder="Fechar"
+              placeholder={t('close')}
               styleType={2}
             />
           </View>

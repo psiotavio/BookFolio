@@ -42,13 +42,13 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <UserProvider>
-        <DictionaryProvider>
+      <DictionaryProvider>
+        <UserProvider>
           <ThemeProvider>
             <RootLayoutNav />
           </ThemeProvider>
-        </DictionaryProvider>
-      </UserProvider>
+        </UserProvider>
+      </DictionaryProvider>
     </SafeAreaProvider>
   );
 }

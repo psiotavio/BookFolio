@@ -15,6 +15,7 @@ import { useTheme } from "../../../constants/temas/ThemeContext";
 import { useUser } from "../../../contexts/UserContext";
 import CustomPhoto from "../CustomPhoto/CustomPhoto";
 import { LinearGradient } from "expo-linear-gradient";
+import { useDictionary } from "../../../contexts/DictionaryContext";
 
 interface CustomModalBookProps {
   isVisible: boolean;
@@ -39,7 +40,8 @@ const CustomModalBook: React.FC<CustomModalBookProps> = ({
     removeLivroBiblioteca,
     removeLivroRecomendados,
   } = useUser();
-  const { theme, themeName } = useTheme();
+  const { theme } = useTheme();
+  const { t } = useDictionary();
   const [isExpanded, setIsExpanded] = useState(false);
 
   if (!book) {
@@ -106,7 +108,7 @@ const CustomModalBook: React.FC<CustomModalBookProps> = ({
 
                 <CustomButton
                   onPress={handleBuyOnAmazon}
-                  placeholder="Comprar na Amazon"
+                  placeholder={t("buyOnAmazon")} // Tradução integrada
                   styleType={3}
                 />
               </View>
@@ -124,7 +126,7 @@ const CustomModalBook: React.FC<CustomModalBookProps> = ({
                   ></LinearGradient>
                   <TouchableOpacity onPress={toggleExpansion}>
                     <Text style={[styles.readMore, { color: theme.text }]}>
-                      Ver mais
+                      {t("showMore")} {/* Tradução integrada */}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -132,37 +134,21 @@ const CustomModalBook: React.FC<CustomModalBookProps> = ({
               {isExpanded && (
                 <TouchableOpacity onPress={toggleExpansion}>
                   <Text style={[styles.readMore, { color: theme.text }]}>
-                    Ver menos
+                    {t("showLess")} {/* Tradução integrada */}
                   </Text>
                 </TouchableOpacity>
               )}
             </View>
 
             <Text style={[styles.bookDetails, { color: theme.text }]}>
-              Editora: {book.publisher}
+              {t("publisher")}: {book.publisher} {/* Tradução integrada */}
             </Text>
             <Text style={[styles.bookDetails, { color: theme.text }]}>
-              Lançamento: {book.publishedDate}
+              {t("releaseDate")}: {book.publishedDate} {/* Tradução integrada */}
             </Text>
             <Text style={[styles.bookDetails, { color: theme.text }]}>
-              Páginas: {book.pageCount}
+              {t("pageCount")}: {book.pageCount} {/* Tradução integrada */}
             </Text>
-
-            {/* <Text style={[styles.bookDetails, { color: theme.text }]}>
-              Categories: {book.categories!.join(", ")}
-            </Text>
-            <Text style={[styles.bookDetails, { color: theme.text }]}>
-              Average Rating: {book.averageRating}
-            </Text>
-            <Text style={[styles.bookDetails, { color: theme.text }]}>
-              Ratings Count: {book.ratingsCount}
-            </Text>
-            <Text style={[styles.bookDetails, { color: theme.text }]}>
-              Maturity Rating: {book.maturityRating}
-            </Text>
-            <Text style={[styles.bookDetails, { color: theme.text }]}>
-              Language: {book.language}
-            </Text> */}
 
             <View style={styles.modalButtonsContainerDetails}>
               {AddToLibrary === false && (
@@ -178,12 +164,12 @@ const CustomModalBook: React.FC<CustomModalBookProps> = ({
                         removeLivroRecomendados(book.id);
                       }
                     }}
-                    placeholder="Lido"
+                    placeholder={t("read")} // Tradução integrada
                     styleType={1}
                   />
                   <CustomButton
                     onPress={onClose}
-                    placeholder="Fechar"
+                    placeholder={t("close")} // Tradução integrada
                     styleType={2}
                   />
                 </>
@@ -199,12 +185,12 @@ const CustomModalBook: React.FC<CustomModalBookProps> = ({
                         removeLivroRecomendados(book.id);
                       }
                     }}
-                    placeholder="Ler mais tarde"
+                    placeholder={t("readLater")} // Tradução integrada
                     styleType={1}
                   />
                   <CustomButton
                     onPress={onClose}
-                    placeholder="Fechar"
+                    placeholder={t("close")} // Tradução integrada
                     styleType={2}
                   />
                 </>
@@ -214,7 +200,7 @@ const CustomModalBook: React.FC<CustomModalBookProps> = ({
             <View style={styles.anuncioSection}>
               <CustomButton
                 onPress={() => {}}
-                placeholder={"TESTE ANUNCIO"}
+                placeholder={t("testAd")} // Tradução integrada
                 styleType={3}
               ></CustomButton>
             </View>

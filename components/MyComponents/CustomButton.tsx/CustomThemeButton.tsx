@@ -2,16 +2,17 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  Button,
   StyleSheet,
   Modal,
   TouchableOpacity,
 } from "react-native";
 import { useTheme, ThemeName } from "../../../constants/temas/ThemeContext";
 import CustomButton from "./CustomButton";
+import { useDictionary } from "@/contexts/DictionaryContext"; // Importando o hook de tradução
 
 const CustomThemeButton: React.FC = () => {
   const { theme, setThemeName, themeName } = useTheme();
+  const { t } = useDictionary(); // Usando o hook de tradução
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleThemeChange = (newTheme: ThemeName) => {
@@ -20,27 +21,27 @@ const CustomThemeButton: React.FC = () => {
   };
 
   const themeLabels: Record<ThemeName, string> = {
-    light: "Claro",
-    dark: "Escuro",
-    "1984": "1984",
-    gollum: "Gollum",
-    dracula: "Drácula",
-    gatsby: "Gatsby",
-    maravilhas: "Maravilhas",
-    odisseia: "Odisseia",
-    orgulhoEPreconceito: "Orgulho e Preconceito",
-    ulisses: "Ulisses",
-    amado: "Amado",
-    fahrenheit451: "Fahrenheit 451",
-    duna: "Duna",
-    belaEAFera: "Bela e a Fera",
+    light: t("claro"),
+    dark: t("escuro"),
+    "1984": t(1984),
+    gollum: t("gollum"),
+    dracula: t("dracula"),
+    gatsby: t("gatsby"),
+    maravilhas: t("maravilhas"),
+    odisseia: t("odisseia"),
+    orgulhoEPreconceito: t("orgulhoEPreconceito"),
+    ulisses: t("ulisses"),
+    amado: t("amado"),
+    fahrenheit451: t("fahrenheit451"),
+    duna: t("duna"),
+    belaEAFera: t("belaEAFera"),
   };
 
   return (
     <View style={{ width: "100%" }}>
       <CustomButton
         onPress={() => setModalVisible(true)}
-        placeholder={`Mudar Tema: ${themeLabels[themeName]}`} // Usando o nome legível do tema atual
+        placeholder={`${t("changeTheme")}: ${themeLabels[themeName]}`} // Usando o nome legível do tema atual
         styleType={1}
       />
 
@@ -58,7 +59,7 @@ const CustomThemeButton: React.FC = () => {
             ]}
           >
             <Text style={[styles.modalText, { color: theme.text }]}>
-              Selecione um Tema
+              {t("selectTheme")}
             </Text>
             {(
               [
@@ -101,7 +102,7 @@ const CustomThemeButton: React.FC = () => {
               onPress={() => setModalVisible(false)}
               style={[{ backgroundColor: theme.errorColor }, styles.button]}
             >
-              <Text style={styles.buttonText}>Fechar</Text>
+              <Text style={styles.buttonText}>{t("close")}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -120,10 +121,6 @@ const styles = StyleSheet.create({
     width: "100%",
     flexShrink: 1, // Permite que os botões encolham igualmente
   },
-  text: {
-    fontSize: 18,
-    marginBottom: 20,
-  },
   modalContainer: {
     flex: 1,
     justifyContent: "center",
@@ -139,9 +136,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 20,
     textAlign: "center",
-  },
-  textDefault: {
-    fontSize: 16,
   },
   buttonText: {
     fontSize: 16,

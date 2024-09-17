@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Button, TextInput, Modal } from "react-native";
+import { View, Text, StyleSheet, TextInput, Modal } from "react-native";
 import { ProgressBar as PaperProgressBar } from "react-native-paper";
 import CustomButton from "../CustomButton.tsx/CustomButton";
 import { useTheme } from "../../../constants/temas/ThemeContext";
 import { useUser } from "../../../contexts/UserContext";
+import { useDictionary } from "../../../contexts/DictionaryContext"; // Hook para tradução
 
 interface ProgressBarProps {
   title: string;
@@ -28,37 +29,38 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ title, goal, progress }) => {
   );
 };
 
-const calculateBooksRead = (
-  books: { LidoQuando?: Date }[],
-  timeFrame: "year" | "month" | "week"
-) => {
-  const now = new Date();
-  return books.filter((book) => {
-    if (!book.LidoQuando) return false;
-    const dateRead = new Date(book.LidoQuando);
-    if (timeFrame === "year") {
-      return dateRead.getFullYear() === now.getFullYear();
-    }
-    if (timeFrame === "month") {
-      return (
-        dateRead.getFullYear() === now.getFullYear() &&
-        dateRead.getMonth() === now.getMonth()
-      );
-    }
-    if (timeFrame === "week") {
-      const oneWeekAgo = new Date();
-      oneWeekAgo.setDate(now.getDate() - 7);
-      return dateRead > oneWeekAgo;
-    }
-    return false;
-  }).length;
-};
-
 const ReadingProgress: React.FC = () => {
   const { livrosLidos } = useUser();
+  const { t } = useDictionary(); // Hook de traduções
   const [yearGoal, setYearGoal] = useState(365);
   const [monthGoal, setMonthGoal] = useState(30);
   const [weekGoal, setWeekGoal] = useState(7);
+
+  const calculateBooksRead = (
+    books: { LidoQuando?: Date }[],
+    timeFrame: "year" | "month" | "week"
+  ) => {
+    const now = new Date();
+    return books.filter((book) => {
+      if (!book.LidoQuando) return false;
+      const dateRead = new Date(book.LidoQuando);
+      if (timeFrame === "year") {
+        return dateRead.getFullYear() === now.getFullYear();
+      }
+      if (timeFrame === "month") {
+        return (
+          dateRead.getFullYear() === now.getFullYear() &&
+          dateRead.getMonth() === now.getMonth()
+        );
+      }
+      if (timeFrame === "week") {
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(now.getDate() - 7);
+        return dateRead > oneWeekAgo;
+      }
+      return false;
+    }).length;
+  };
 
   const yearProgress = calculateBooksRead(livrosLidos, "year");
   const monthProgress = calculateBooksRead(livrosLidos, "month");
@@ -88,24 +90,24 @@ const ReadingProgress: React.FC = () => {
   return (
     <View style={styles.container}>
       <ProgressBar
-        title="Ano: Livros lidos"
+        title={t("yearBooksRead")} // Traduzido
         goal={yearGoal}
         progress={yearProgress}
       />
       <ProgressBar
-        title="Mês: Livros lidos"
+        title={t("monthBooksRead")} // Traduzido
         goal={monthGoal}
         progress={monthProgress}
       />
       <ProgressBar
-        title="Semana: Livros lidos"
+        title={t("weekBooksRead")} // Traduzido
         goal={weekGoal}
         progress={weekProgress}
       />
 
       <CustomButton
         onPress={openModal}
-        placeholder={"Ajustar Metas"}
+        placeholder={t("adjustGoalsButton")} // Traduzido
         styleType={1}
       />
 
@@ -118,57 +120,54 @@ const ReadingProgress: React.FC = () => {
             ]}
           >
             <Text style={[styles.textTitle, { color: theme.text }]}>
-              Ajustar Metas
+              {t("adjustGoals")} {/* Traduzido */}
             </Text>
             <Text style={[styles.textTitleInput, { color: theme.text }]}>
-              Meta anual:
+              {t("annualGoal")} {/* Traduzido */}
             </Text>
             <TextInput
               style={[styles.input, { color: theme.text }]}
               keyboardType="number-pad"
               value={newYearGoal}
               onChangeText={setNewYearGoal}
-              placeholder="Meta Anual"
+              placeholder={t("annualGoal")} // Traduzido
               selectionColor={theme.details}
               placeholderTextColor={theme.text}
-              selectionHandleColor={theme.details}
             />
             <Text style={[styles.textTitleInput, { color: theme.text }]}>
-              Meta mensal:
+              {t("monthlyGoal")} {/* Traduzido */}
             </Text>
             <TextInput
               style={[styles.input, { color: theme.text }]}
               keyboardType="number-pad"
               value={newMonthGoal}
               onChangeText={setNewMonthGoal}
-              placeholder="Meta Mensal"
+              placeholder={t("monthlyGoal")} // Traduzido
               selectionColor={theme.details}
               placeholderTextColor={theme.text}
-              selectionHandleColor={theme.details}
             />
             <Text style={[styles.textTitleInput, { color: theme.text }]}>
-              Meta semanal:
+              {t("weeklyGoal")} {/* Traduzido */}
             </Text>
             <TextInput
               style={[styles.input, { color: theme.text }]}
               keyboardType="number-pad"
               value={newWeekGoal}
               onChangeText={setNewWeekGoal}
-              placeholder="Meta Semanal"
+              placeholder={t("weeklyGoal")} // Traduzido
               selectionColor={theme.details}
               placeholderTextColor={theme.text}
-              selectionHandleColor={theme.details}
             />
 
             <View style={styles.buttonsContainer}>
               <CustomButton
                 onPress={saveGoals}
-                placeholder="Salvar"
+                placeholder={t("save")} // Traduzido
                 styleType={1}
               />
               <CustomButton
                 onPress={() => setModalVisible(false)}
-                placeholder="Cancelar"
+                placeholder={t("cancel")} // Traduzido
                 styleType={2}
               />
             </View>
@@ -236,11 +235,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 30,
   },
-  buttonsContainer:{
-    flexDirection:'row',
+  buttonsContainer: {
+    flexDirection: "row",
     marginTop: 25,
-    gap: 15
-  }
+    gap: 15,
+  },
 });
 
 export default ReadingProgress;

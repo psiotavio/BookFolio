@@ -14,14 +14,14 @@ import CustomThemeButton from "@/components/MyComponents/CustomButton.tsx/Custom
 import CustomButton from "../../components/MyComponents/CustomButton.tsx/CustomButton";
 import { useUser } from "../../contexts/UserContext";
 import ReadingProgress from "../../components/MyComponents/ProgressBar/ProgressBar";
-import { fetchBookRecommendationsByGenre } from "@/services/BookService";
 import CustomTranslationButton from "@/components/MyComponents/CustomButton.tsx/CustomTransaltionButton";
+import { useDictionary } from "@/contexts/DictionaryContext"; // Adicionando o hook de tradução
 
 export default function TabTwoScreen() {
   const { theme } = useTheme();
+  const { t } = useDictionary(); // Hook para tradução
   const { livrosLidos, biblioteca, updateLivroReview, clearAll } = useUser();
   const [showSettings, setShowSettings] = useState(false);
-
 
   return (
     <SafeAreaView
@@ -45,37 +45,42 @@ export default function TabTwoScreen() {
             <CustomTranslationButton />
             <CustomButton
               onPress={clearAll}
-              placeholder={"Resetar Conta"}
+              placeholder={t("resetAccount")} // Usando tradução
               styleType={1}
             />
             <CustomButton
               onPress={() => setShowSettings(false)}
-              placeholder={"Voltar"}
+              placeholder={t("back")} // Usando tradução
               styleType={2}
             />
             <View style={styles.anuncioSection}>
               <CustomButton
                 onPress={() => {}}
-                placeholder={"TESTE ANUNCIO"}
+                placeholder={t("testAd")} // Usando tradução
                 styleType={3}
-              ></CustomButton>
+              />
             </View>
           </View>
         ) : (
           <View style={styles.content}>
-            <TouchableOpacity style={styles.cogButton} onPress={() => setShowSettings(!showSettings)}>
+            <TouchableOpacity
+              style={styles.cogButton}
+              onPress={() => setShowSettings(!showSettings)}
+            >
               <FontAwesome name="cog" size={30} color={theme.text} />
             </TouchableOpacity>
-            <Text style={[styles.title, { color: theme.text }]}>Perfil</Text>
+            <Text style={[styles.title, { color: theme.text }]}>
+              {t("profile")} {/* Usando tradução */}
+            </Text>
             <ScrollView style={styles.progressSection}>
               <ReadingProgress />
             </ScrollView>
             <View style={styles.anuncioSection}>
               <CustomButton
                 onPress={() => {}}
-                placeholder={"TESTE ANUNCIO"}
+                placeholder={t("testAd")} // Usando tradução
                 styleType={3}
-              ></CustomButton>
+              />
             </View>
           </View>
         )}
@@ -128,25 +133,20 @@ const styles = StyleSheet.create({
     width: "75%",
     margin: "auto",
   },
-  cogButton:{
-    position: 'absolute',
+  cogButton: {
+    position: "absolute",
     top: -100,
     right: 5,
     padding: 20,
   },
-
-
-
-
-
   anuncioSection: {
     height: 70,
     backgroundColor: "grey",
     marginVertical: 20,
     alignItems: "center",
     justifyContent: "center",
-    display:'flex',
+    display: "flex",
     flexShrink: 1,
-    width: "100%"
+    width: "100%",
   },
 });

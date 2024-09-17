@@ -19,15 +19,16 @@ import { fetchBookRecommendationsByGenre } from "@/services/BookService";
 
 export default function Recomendations() {
   const { theme } = useTheme();
-  const { t } = useDictionary(); // Hook de traduções
+  const { t, language } = useDictionary(); // Hook de traduções com idioma
   const { livrosRecomendados } = useUser();
   const [selectedBook, setSelectedBook] = useState<Livro | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [recommendedBooks, setRecommendedBooks] =
-    useState<Livro[]>(livrosRecomendados);
+  const [recommendedBooks, setRecommendedBooks] = useState<Livro[]>(livrosRecomendados);
   const [selectedGenre, setSelectedGenre] = useState(t("recomendadoParaVoce"));
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
+
+  const authors = livrosRecomendados.map((livro) => livro.authors[0]); // Pega o autor principal de cada livro recomendado
 
   useEffect(() => {
     const fetchRecommendations = async () => {
@@ -36,13 +37,17 @@ export default function Recomendations() {
         return;
       }
       setLoading(true);
-      const books = await fetchBookRecommendationsByGenre([selectedGenre]);
+      const books = await fetchBookRecommendationsByGenre(
+        [selectedGenre],
+        authors, // Passa a lista de autores como fallback
+        language // Passando o idioma atual como argumento
+      );
       setRecommendedBooks(books);
       setLoading(false);
     };
 
     fetchRecommendations();
-  }, [selectedGenre]);
+  }, [selectedGenre, language]); // Adicionando o idioma como dependência
 
   const loadMoreBooks = async () => {
     if (loading || selectedGenre === t("recomendadoParaVoce")) return;
@@ -52,6 +57,8 @@ export default function Recomendations() {
       const newPage = page + 1;
       const books = await fetchBookRecommendationsByGenre(
         [selectedGenre],
+        authors, // Passa os autores
+        language, // Passando o idioma
         newPage
       );
       setRecommendedBooks((prevBooks) => [...prevBooks, ...books]);
