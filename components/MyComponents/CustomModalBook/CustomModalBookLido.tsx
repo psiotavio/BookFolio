@@ -17,7 +17,7 @@ import CustomPhoto from "../CustomPhoto/CustomPhoto";
 import FiveStarReview from "../FiveStarComponent/FiveStarComponent";
 import SliderReview from "../SliderReview/SliderReview";
 import { LinearGradient } from "expo-linear-gradient";
-import { Ionicons } from '@expo/vector-icons'; // Importando o ícone do lixo
+import { Ionicons } from "@expo/vector-icons"; // Importando o ícone do lixo
 import { useDictionary } from "../../../contexts/DictionaryContext"; // Hook de tradução
 
 interface CustomModalBookProps {
@@ -167,7 +167,7 @@ const CustomModalBookLido: React.FC<CustomModalBookProps> = ({
               <Text
                 style={{ color: theme.text, fontSize: 20, fontWeight: "bold" }}
               >
-                {t("rateBook")} 
+                {t("rateBook")}
               </Text>
               <View style={{ transform: "scale(1.3)" }}>
                 <FiveStarReview rating={rating} />
@@ -179,24 +179,24 @@ const CustomModalBookLido: React.FC<CustomModalBookProps> = ({
               <View style={styles.modalButtonsContainer}>
                 <CustomButton
                   onPress={onClose}
-                  placeholder={t("cancel")} 
+                  placeholder={t("cancel")}
                   styleType={2}
                 />
                 <CustomButton
                   onPress={handleSave}
-                  placeholder={t("confirm")} 
+                  placeholder={t("confirm")}
                   styleType={1}
                 />
               </View>
             </View>
 
-            <View style={styles.anuncioSection}>
+            {/* <View style={styles.anuncioSection}>
               <CustomButton
                 onPress={() => {}}
                 placeholder={t("testAd")} // Tradução
                 styleType={3}
               ></CustomButton>
-            </View>
+            </View> */}
           </View>
         </ScrollView>
       </View>

@@ -197,13 +197,13 @@ const CustomModalBook: React.FC<CustomModalBookProps> = ({
               )}
             </View>
 
-            <View style={styles.anuncioSection}>
+            {/* <View style={styles.anuncioSection}>
               <CustomButton
                 onPress={() => {}}
                 placeholder={t("testAd")} // Tradução integrada
                 styleType={3}
               ></CustomButton>
-            </View>
+            </View> */}
           </View>
         </ScrollView>
       </View>

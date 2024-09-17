@@ -18,61 +18,75 @@ import { useDictionary } from "@/contexts/DictionaryContext"; // Importando o ho
 
 const SearchBar = () => {
   const [query, setQuery] = useState<string>("");
-  const [books, setBooks] = useState<Livro[]>([]); // Definindo o tipo do estado como Livro[]
+  const [books, setBooks] = useState<Livro[]>([]);
   const [isKeyboardDismissed, setIsKeyboardDismissed] = useState<boolean>(false);
-  const [selectedBook, setSelectedBook] = useState<Livro | null>(null); // Estado para o livro selecionado
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false); // Estado para a visibilidade do modal
+  const [selectedBook, setSelectedBook] = useState<Livro | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const { theme } = useTheme();
   const { t, language } = useDictionary(); // Usando o idioma do contexto
 
   useEffect(() => {
     if (query.length > 2) {
       const delayDebounce = setTimeout(() => {
-        fetchBookDetails(query, language).then((fetchedBooks: Livro[]) => {
-          setBooks(fetchedBooks);
-        });
+        // Se o idioma for 'pt-BR', altere para 'pt' para garantir compatibilidade
+        const searchLanguage = language === "pt-BR" ? "pt" : language;
+  
+        fetchBookDetails(query, searchLanguage)
+          .then((fetchedBooks: Livro[]) => {
+            if (fetchedBooks.length === 0) {
+              console.log("No books found in the specified language.");
+            }
+            setBooks(fetchedBooks);
+          })
+          .catch((error) => {
+            console.error("Error fetching books:", error);
+            setBooks([]);
+          });
       }, 500);
-
+  
       return () => clearTimeout(delayDebounce);
-    } else if (query.length === 0) {
-      setBooks([]); // Limpa a lista de livros se a consulta estiver vazia
+    } else {
+      setBooks([]);
     }
-  }, [query, language]); // Adiciona `language` como dependência
+  }, [query, language]);
+  
 
   const handleOutsidePress = () => {
     if (isKeyboardDismissed) {
-      setBooks([]); // Recolhe o dropdown na segunda vez que é clicado fora
-      setIsKeyboardDismissed(false); // Reseta estado
+      setBooks([]);
+      setIsKeyboardDismissed(false);
     } else {
-      Keyboard.dismiss(); // Recolhe o teclado na primeira vez que é clicado fora
-      setIsKeyboardDismissed(true); // Define estado para indicar que o teclado foi recolhido
+      Keyboard.dismiss();
+      setIsKeyboardDismissed(true);
     }
   };
 
   const handleBookPress = (book: Livro) => {
     setSelectedBook(book);
+    setBooks([]);
     setIsModalVisible(true);
   };
 
   const closeModal = () => {
     setIsModalVisible(false);
     setSelectedBook(null);
+    setBooks([]);
   };
 
   return (
     <TouchableWithoutFeedback onPress={handleOutsidePress}>
       <View style={styles.container}>
         <TextInput
-          style={[styles.searchInput , {backgroundColor: theme.modalBackground, color: theme.text, borderColor: theme.details}]}
+          style={[styles.searchInput, { backgroundColor: theme.modalBackground, color: theme.text, borderColor: theme.details }]}
           placeholder={t("searchBooksPlaceholder")} // Adiciona tradução ao placeholder
           placeholderTextColor={theme.text}
           value={query}
           onChangeText={setQuery}
-          onFocus={() => setIsKeyboardDismissed(false)} // Reseta estado ao focar na barra de pesquisa
+          onFocus={() => setIsKeyboardDismissed(false)}
         />
         {books.length > 0 && (
           <FlatList
-            style={[styles.flatlist, {backgroundColor: theme.modalBackground, borderColor: theme.details}]}
+            style={[styles.flatlist, { backgroundColor: theme.modalBackground, borderColor: theme.details }]}
             data={books}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
@@ -82,14 +96,11 @@ const SearchBar = () => {
               >
                 <Image
                   source={{
-                    uri:
-                      item.imageLinks?.thumbnail! ||
-                      item.imageLinks?.smallThumbnail! ||
-                      "https://via.placeholder.com/150",
+                    uri: item.imageLinks?.thumbnail || item.imageLinks?.smallThumbnail || "https://via.placeholder.com/150",
                   }}
                   style={styles.bookCover}
                 />
-                <Text style={[styles.bookTitle, {color: theme.text}]}>{item.title}</Text>
+                <Text style={[styles.bookTitle, { color: theme.text }]}>{item.title}</Text>
               </TouchableOpacity>
             )}
           />
@@ -109,10 +120,10 @@ const SearchBar = () => {
 const styles = StyleSheet.create({
   container: {
     marginTop: 50,
-    position: 'absolute',
+    position: "absolute",
     paddingHorizontal: 10,
     width: "86%",
-    top: 60
+    top: 60,
   },
   searchInput: {
     height: 40,
@@ -126,7 +137,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
-    
+    overflow: 'hidden',
   },
   bookCover: {
     width: 55,
@@ -139,14 +150,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   flatlist: {
-    width: '92%',
-    alignSelf: 'center',
-    maxHeight: "45%",
+    width: "90%",
+    alignSelf: "center",
+    maxHeight: 275,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     borderWidth: 2,
-    borderTopColor: 'transparent',
-    borderStyle: 'solid',
+    borderTopColor: "transparent",
+    borderStyle: "solid",
+    overflow: 'hidden', 
   },
 });
 

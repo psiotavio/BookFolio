@@ -8,6 +8,7 @@ import React, {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Livro } from "../interfaces/Livro";
 import { fetchBookRecommendations } from "../services/BookService"; // Importe corretamente
+import { useDictionary } from "./DictionaryContext";
 
 interface UserContextType {
   livrosLidos: Livro[];
@@ -20,7 +21,7 @@ interface UserContextType {
   removeLivroRecomendados:(id: string) => void;
   updateLivroReview: (id: string, newReview: number) => void;
   clearAll: () => void;
-  recommendBooks: (livro: Livro) => void;
+  recommendBooks: (livro: Livro, language: string) => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -31,8 +32,10 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
   const [livrosRecomendados, setLivrosRecomendados] = useState<Livro[]>([]);
   const [livrosLidos, setLivrosLidos] = useState<Livro[]>([]);
   const [biblioteca, setBiblioteca] = useState<Livro[]>([]);
+  const { language } = useDictionary(); // Obtendo o idioma atual do app
 
   useEffect(() => {
+    
     const loadStorageData = async () => {
       try {
         const [storedLivrosLidos, storedBiblioteca, storedLivrosRecomendados] = await Promise.all([
@@ -101,7 +104,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
     if (!livrosLidos.some((l) => l.id === livro.id)) {
       const livroComData = { ...livro, LidoQuando: new Date(), Review: 0 };
       setLivrosLidos((prevLivrosLidos) => [...prevLivrosLidos, livroComData]);
-      await recommendBooks(livro); // Aguarda a função recomendar livros
+      await recommendBooks(livro, language); // Passa o idioma para a função de recomendação
     }
   };
 
@@ -145,9 +148,9 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
     await AsyncStorage.removeItem('livrosRecomendados');
   };
 
-  const recommendBooks = async (livro: Livro) => {
+  const recommendBooks = async (livro: Livro, language: string) => {
     try {
-      const recommendedBooks = await fetchBookRecommendations(livro.authors); // Busca livros recomendados
+      const recommendedBooks = await fetchBookRecommendations(livro.authors, language); // Busca livros recomendados passando o idioma
       const novosRecomendados = [
         ...recommendedBooks.slice(0, 18).filter(
           (newBook) => !livrosRecomendados.some((book) => book.id === newBook.id)
@@ -160,6 +163,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
       console.error("Erro ao buscar livros recomendados:", error);
     }
   };
+  
 
   return (
     <UserContext.Provider

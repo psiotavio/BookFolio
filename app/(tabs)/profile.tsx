@@ -53,13 +53,13 @@ export default function TabTwoScreen() {
               placeholder={t("back")} // Usando tradução
               styleType={2}
             />
-            <View style={styles.anuncioSection}>
+            {/* <View style={styles.anuncioSection}>
               <CustomButton
                 onPress={() => {}}
                 placeholder={t("testAd")} // Usando tradução
                 styleType={3}
               />
-            </View>
+            </View> */}
           </View>
         ) : (
           <View style={styles.content}>
@@ -75,13 +75,13 @@ export default function TabTwoScreen() {
             <ScrollView style={styles.progressSection}>
               <ReadingProgress />
             </ScrollView>
-            <View style={styles.anuncioSection}>
+            {/* <View style={styles.anuncioSection}>
               <CustomButton
                 onPress={() => {}}
                 placeholder={t("testAd")} // Usando tradução
                 styleType={3}
               />
-            </View>
+            </View> */}
           </View>
         )}
       </View>

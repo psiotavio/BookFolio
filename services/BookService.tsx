@@ -4,11 +4,20 @@ const API_KEY = "AIzaSyBkHfmfEHDKGhGrkk_J0LYNeTCy2HKwV2c";  // Utilize sua chave
 
 const fetchBookDetails = async (bookTitle: string, language: string): Promise<Livro[]> => {
   const query = encodeURI(bookTitle);
+  
   try {
     const response = await fetch(
       `https://www.googleapis.com/books/v1/volumes?q=${query}&key=${API_KEY}&maxResults=30&printType=books&orderBy=relevance&langRestrict=${language}`
     );
+
     const data = await response.json();
+
+    // Verifique se a API está retornando algum erro
+    if (data.error) {
+      console.error("Error from Google Books API:", data.error);
+      return [];
+    }
+
     if (!data.items) {
       return [];
     }
@@ -31,23 +40,16 @@ const fetchBookDetails = async (bookTitle: string, language: string): Promise<Li
         imageLinks: item.volumeInfo.imageLinks,
         language: item.volumeInfo.language,
         previewLink: item.volumeInfo.previewLink,
-        similarBooks: [],
-        Review: 0,
         amazonLink: `https://www.amazon.com.br/s?k=${encodeURIComponent(item.volumeInfo.title + ' ' + (item.volumeInfo.authors ? item.volumeInfo.authors.join(' ') : ''))}&linkCode=ll2&tag=bookfolio-20&language=${language}&ref_=as_li_ss_tl`,
+        Review: 0,
       };
 
-      if (
-        !uniqueBooks.has(book.title) &&
-        book.language === language &&
-        book.imageLinks !== undefined
-      ) {
-        uniqueBooks.set(book.title, book);
+      if (!uniqueBooks.has(book.id) && book.imageLinks) {
+        uniqueBooks.set(book.id, book);
       }
     });
 
-    const sortedBooks = Array.from(uniqueBooks.values()).sort((a, b) => {
-      return (b.ratingsCount || 0) - (a.ratingsCount || 0);
-    });
+    const sortedBooks = Array.from(uniqueBooks.values()).sort((a, b) => (b.ratingsCount || 0) - (a.ratingsCount || 0));
 
     return sortedBooks;
   } catch (error) {
@@ -55,6 +57,7 @@ const fetchBookDetails = async (bookTitle: string, language: string): Promise<Li
     return [];
   }
 };
+
 
 const fetchBookRecommendations = async (authors: string[], language: string): Promise<Livro[]> => {
   try {
@@ -112,72 +115,155 @@ const fetchBookRecommendations = async (authors: string[], language: string): Pr
   }
 };
 
-const fetchBookRecommendationsByGenre = async (genres: string[], authors: string[], language: string, page: number = 1): Promise<Livro[]> => {
+const fetchBookRecommendationsByAuthor = async (
+  authors: string[],
+  livrosLidos: Livro[],  // Agora utilizando a lista de livros lidos
+  appLanguage: string
+): Promise<Livro[]> => {
   try {
-    const startIndex = (page - 1) * 18;
-    const genreQuery = genres.map(genre => `subject:${encodeURI(genre)}`).join('+');
-    const queryGenre = `${genreQuery}`;
-
-    console.log(`Fetching books with query: ${queryGenre} (page: ${page})`);
-
-    const response = await fetch(
-      `https://www.googleapis.com/books/v1/volumes?q=${queryGenre}&key=${API_KEY}&langRestrict=${language}&maxResults=18&printType=books&orderBy=relevance&startIndex=${startIndex}`
-    );
-    const data = await response.json();
-    
-    console.log('Data fetched from API:', data);
-
-    // Se não houver livros retornados para o gênero, faz a busca pelos autores
-    if (data.totalItems === 0) {
-      console.log("No books found for genre, fetching recommendations by author...");
-      return fetchBookRecommendations(authors, language); // Chama a função para buscar por autor
-    }
-
+    const recommendedBooks: Livro[] = [];
     const uniqueBooks = new Map<string, Livro>();
 
-    data.items.forEach((item: any) => {
-      const book: Livro = {
-        id: item.id,
-        title: item.volumeInfo.title,
-        authors: item.volumeInfo.authors || ["Desconhecido"],
-        publisher: item.volumeInfo.publisher,
-        publishedDate: item.volumeInfo.publishedDate,
-        description: item.volumeInfo.description,
-        pageCount: item.volumeInfo.pageCount,
-        categories: item.volumeInfo.categories || [],
-        averageRating: item.volumeInfo.averageRating,
-        ratingsCount: item.volumeInfo.ratingsCount,
-        maturityRating: item.volumeInfo.maturityRating,
-        imageLinks: item.volumeInfo.imageLinks,
-        language: item.volumeInfo.language,
-        previewLink: item.volumeInfo.previewLink,
-        similarBooks: [],
-        amazonLink: `https://www.amazon.com.br/s?k=${encodeURIComponent(item.volumeInfo.title + ' ' + (item.volumeInfo.authors ? item.volumeInfo.authors.join(' ') : ''))}&linkCode=ll2&tag=bookfolio-20&language=${language}&ref_=as_li_ss_tl`,
-        Review: 0,
-      };
+    for (const livro of livrosLidos) {
+      const livroLanguage = livro.language || appLanguage; // Se não houver linguagem no livro, use a linguagem do app
 
-      const publicationYear = parseInt(book.publishedDate!.substring(0, 4));
-      const currentYear = new Date().getFullYear();
+      // Se a linguagem do livro for a mesma do app, busca pelo título do livro na linguagem do livro
+      if (livroLanguage === appLanguage) {
+        console.log(`Buscando livros por título: ${livro.title} na linguagem: ${livroLanguage}`);
 
-      if (
-        publicationYear >= 1999 &&
-        !uniqueBooks.has(book.title) &&
-        book.imageLinks !== undefined
-      ) {
-        uniqueBooks.set(book.title, book);
+        const response = await fetch(
+          `https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(
+            livro.title
+          )}&key=${API_KEY}&maxResults=13&printType=books&orderBy=relevance&langRestrict=${livroLanguage}`
+        );
+
+        const data = await response.json();
+        if (data.items) {
+          data.items.forEach((item: any) => {
+            const book: Livro = {
+              id: item.id,
+              title: item.volumeInfo.title,
+              authors: item.volumeInfo.authors || ["Desconhecido"],
+              publisher: item.volumeInfo.publisher,
+              publishedDate: item.volumeInfo.publishedDate,
+              description: item.volumeInfo.description,
+              pageCount: item.volumeInfo.pageCount,
+              categories: item.volumeInfo.categories || [],
+              averageRating: item.volumeInfo.averageRating,
+              ratingsCount: item.volumeInfo.ratingsCount,
+              maturityRating: item.volumeInfo.maturityRating,
+              imageLinks: item.volumeInfo.imageLinks,
+              language: item.volumeInfo.language,
+              previewLink: item.volumeInfo.previewLink,
+              amazonLink: `https://www.amazon.com.br/s?k=${encodeURIComponent(
+                item.volumeInfo.title + " " + (item.volumeInfo.authors ? item.volumeInfo.authors.join(" ") : "")
+              )}&linkCode=ll2&tag=bookfolio-20&language=${livroLanguage}&ref_=as_li_ss_tl`,
+              Review: 0,
+            };
+
+            // Verifica se o livro já foi adicionado e adiciona se não
+            if (!uniqueBooks.has(book.id) && book.imageLinks) {
+              uniqueBooks.set(book.id, book);
+              recommendedBooks.push(book);
+            }
+          });
+        }
+
+        // Caso não encontre livros pelo título, busca pelo autor
+        if (recommendedBooks.length === 0) {
+          for (const author of livro.authors) {
+            console.log(`Buscando livros por autor: ${author} na linguagem: ${appLanguage}`);
+
+            const response = await fetch(
+              `https://www.googleapis.com/books/v1/volumes?q=inauthor:${encodeURIComponent(
+                author
+              )}&key=${API_KEY}&maxResults=13&printType=books&orderBy=relevance&langRestrict=${appLanguage}`
+            );
+
+            const data = await response.json();
+            if (data.items) {
+              data.items.forEach((item: any) => {
+                const book: Livro = {
+                  id: item.id,
+                  title: item.volumeInfo.title,
+                  authors: item.volumeInfo.authors || ["Desconhecido"],
+                  publisher: item.volumeInfo.publisher,
+                  publishedDate: item.volumeInfo.publishedDate,
+                  description: item.volumeInfo.description,
+                  pageCount: item.volumeInfo.pageCount,
+                  categories: item.volumeInfo.categories || [],
+                  averageRating: item.volumeInfo.averageRating,
+                  ratingsCount: item.volumeInfo.ratingsCount,
+                  maturityRating: item.volumeInfo.maturityRating,
+                  imageLinks: item.volumeInfo.imageLinks,
+                  language: item.volumeInfo.language,
+                  previewLink: item.volumeInfo.previewLink,
+                  amazonLink: `https://www.amazon.com.br/s?k=${encodeURIComponent(
+                    item.volumeInfo.title + " " + (item.volumeInfo.authors ? item.volumeInfo.authors.join(" ") : "")
+                  )}&linkCode=ll2&tag=bookfolio-20&language=${appLanguage}&ref_=as_li_ss_tl`,
+                  Review: 0,
+                };
+
+                // Verifica se o livro já foi adicionado e adiciona se não
+                if (!uniqueBooks.has(book.id) && book.imageLinks) {
+                  uniqueBooks.set(book.id, book);
+                  recommendedBooks.push(book);
+                }
+              });
+            }
+          }
+        }
+      } else {
+        // Se a linguagem do livro for diferente da linguagem do app, busca pelo autor na linguagem do app
+        for (const author of livro.authors) {
+          console.log(`Buscando livros por autor: ${author} na linguagem: ${appLanguage}`);
+
+          const response = await fetch(
+            `https://www.googleapis.com/books/v1/volumes?q=inauthor:${encodeURIComponent(
+              author
+            )}&key=${API_KEY}&maxResults=13&printType=books&orderBy=relevance&langRestrict=${appLanguage}`
+          );
+
+          const data = await response.json();
+          if (data.items) {
+            data.items.forEach((item: any) => {
+              const book: Livro = {
+                id: item.id,
+                title: item.volumeInfo.title,
+                authors: item.volumeInfo.authors || ["Desconhecido"],
+                publisher: item.volumeInfo.publisher,
+                publishedDate: item.volumeInfo.publishedDate,
+                description: item.volumeInfo.description,
+                pageCount: item.volumeInfo.pageCount,
+                categories: item.volumeInfo.categories || [],
+                averageRating: item.volumeInfo.averageRating,
+                ratingsCount: item.volumeInfo.ratingsCount,
+                maturityRating: item.volumeInfo.maturityRating,
+                imageLinks: item.volumeInfo.imageLinks,
+                language: item.volumeInfo.language,
+                previewLink: item.volumeInfo.previewLink,
+                amazonLink: `https://www.amazon.com.br/s?k=${encodeURIComponent(
+                  item.volumeInfo.title + " " + (item.volumeInfo.authors ? item.volumeInfo.authors.join(" ") : "")
+                )}&linkCode=ll2&tag=bookfolio-20&language=${appLanguage}&ref_=as_li_ss_tl`,
+                Review: 0,
+              };
+
+              // Verifica se o livro já foi adicionado e adiciona se não
+              if (!uniqueBooks.has(book.id) && book.imageLinks) {
+                uniqueBooks.set(book.id, book);
+                recommendedBooks.push(book);
+              }
+            });
+          }
+        }
       }
-    });
+    }
 
-    const sortedBooks = Array.from(uniqueBooks.values()).sort((a, b) => {
-      return (b.ratingsCount || 0) - (a.ratingsCount || 0);
-    });
-
-    return sortedBooks;
+    return recommendedBooks.slice(0, 13); // Limita a 13 livros recomendados no total
   } catch (error) {
-    console.error("Error fetching book details:", error);
+    console.error("Erro ao buscar livros recomendados por autor", error);
     return [];
   }
 };
 
-
-export { fetchBookDetails, fetchBookRecommendations, fetchBookRecommendationsByGenre };
+export { fetchBookDetails, fetchBookRecommendations, fetchBookRecommendationsByAuthor };

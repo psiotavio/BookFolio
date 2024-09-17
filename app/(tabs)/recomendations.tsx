@@ -15,60 +15,42 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import CustomModalBook from "../../components/MyComponents/CustomModalBook/CustomModalBook";
 import CustomPhoto from "../../components/MyComponents/CustomPhoto/CustomPhoto";
 import { useDictionary } from "@/contexts/DictionaryContext"; // Adicionando o hook de tradução
-import { fetchBookRecommendationsByGenre } from "@/services/BookService";
+import { fetchBookRecommendationsByAuthor } from "@/services/BookService";
 
 export default function Recomendations() {
   const { theme } = useTheme();
   const { t, language } = useDictionary(); // Hook de traduções com idioma
-  const { livrosRecomendados } = useUser();
+  const { livrosRecomendados, livrosLidos } = useUser();
   const [selectedBook, setSelectedBook] = useState<Livro | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [recommendedBooks, setRecommendedBooks] = useState<Livro[]>(livrosRecomendados);
-  const [selectedGenre, setSelectedGenre] = useState(t("recomendadoParaVoce"));
+  const [recommendedBooks, setRecommendedBooks] = useState<Livro[]>([]);
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
 
-  const authors = livrosRecomendados.map((livro) => livro.authors[0]); // Pega o autor principal de cada livro recomendado
+  const authors = [
+    ...new Set(livrosRecomendados.map((livro) => livro.authors[0])),
+  ]; // Pega os autores únicos
 
-  useEffect(() => {
-    const fetchRecommendations = async () => {
-      if (selectedGenre === t("recomendadoParaVoce")) {
-        setRecommendedBooks(livrosRecomendados); // Mostrar lista atual de livros recomendados
-        return;
-      }
-      setLoading(true);
-      const books = await fetchBookRecommendationsByGenre(
-        [selectedGenre],
-        authors, // Passa a lista de autores como fallback
-        language // Passando o idioma atual como argumento
-      );
-      setRecommendedBooks(books);
-      setLoading(false);
-    };
-
-    fetchRecommendations();
-  }, [selectedGenre, language]); // Adicionando o idioma como dependência
-
-  const loadMoreBooks = async () => {
-    if (loading || selectedGenre === t("recomendadoParaVoce")) return;
-
-    setLoading(true);
+  const fetchRecommendations = async () => {
     try {
-      const newPage = page + 1;
-      const books = await fetchBookRecommendationsByGenre(
-        [selectedGenre],
-        authors, // Passa os autores
-        language, // Passando o idioma
-        newPage
+      setLoading(true);
+      const books = await fetchBookRecommendationsByAuthor(
+        authors, // Array de autores dos livros lidos
+        livrosLidos, // Lista de livros lidos
+        language // Linguagem selecionada no app
       );
-      setRecommendedBooks((prevBooks) => [...prevBooks, ...books]);
-      setPage(newPage);
+      setRecommendedBooks(books); // Define os livros recomendados
     } catch (error) {
-      console.error(t("carregandoMaisLivros"), error);
+      console.error("Erro ao buscar recomendações", error);
     } finally {
       setLoading(false);
     }
   };
+
+  // Quando a linguagem ou a lista de livros lidos mudar, redefine a lista e busca novos livros
+  useEffect(() => {
+    setRecommendedBooks([]); // Reseta a lista de livros recomendados
+    fetchRecommendations(); // Busca novos livros recomendados com a nova linguagem
+  }, [language, livrosLidos]); // A linguagem e os livros lidos afetam a busca
 
   const handleBookPress = (book: Livro) => {
     setSelectedBook(book);
@@ -130,14 +112,12 @@ export default function Recomendations() {
             </View>
           </View>
           <FlatList
-            data={recommendedBooks}
+            data={[...recommendedBooks].reverse()} // Reverte a ordem dos itens
             renderItem={renderBookItem}
             keyExtractor={(item) => item.id}
             numColumns={3}
             style={styles.list}
             contentContainerStyle={styles.containerGrid}
-            onEndReachedThreshold={0.5}
-            onEndReached={loadMoreBooks}
             ListFooterComponent={() =>
               loading ? (
                 <ActivityIndicator size="large" color={theme.text} />
@@ -180,26 +160,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingBottom: 40,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
   logo: {
     marginVertical: 5,
     width: 80,
     height: 80,
     resizeMode: "contain",
-  },
-  booksList: {
-    alignContent: "flex-start",
-    width: "100%",
-    display: "flex",
-    flex: 1,
   },
   listTitle: {
     marginHorizontal: 10,
@@ -207,28 +172,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginTop: 20,
   },
-
   list: {
     width: "100%",
     flex: 1,
     paddingHorizontal: 20,
     marginTop: 30,
-  },
-  bookItem: {
-    padding: 10,
-    marginVertical: 5,
-    borderRadius: 5,
-    alignItems: "center",
-  },
-  bookTitle: {
-    fontSize: 16,
-  },
-  bookCover: {
-    width: 125,
-    height: 180,
-    resizeMode: "cover",
-    marginHorizontal: 5,
-    borderRadius: 5,
   },
   recommendedView: {
     flex: 1,
