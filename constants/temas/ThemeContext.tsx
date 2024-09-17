@@ -15,14 +15,14 @@ export type ThemeName =
   | "gollum"
   | "dracula"
   | "gatsby"
-  | "wonderland"
-  | "odyssey"
-  | "pridePrejudice"
-  | "ulysses"
-  | "beloved"
+  | "maravilhas"
+  | "odisseia"
+  | "orgulhoEPreconceito"
+  | "ulisses"
+  | "amado"
   | "fahrenheit451"
-  | "dune"
-  | "beautyAndBeast";
+  | "duna"
+  | "belaEAFera";
 type ThemeContextType = {
   theme: Theme;
   setThemeName: (themeName: ThemeName) => void;
@@ -50,14 +50,14 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
           "gollum",
           "dracula",
           "gatsby",
-          "wonderland",
-          "odyssey",
-          "pridePrejudice",
-          "ulysses",
-          "beloved",
+          "maravilhas",
+          "odisseia",
+          "orgulhoEPreconceito",
+          "ulisses",
+          "amado",
           "fahrenheit451",
-          "dune",
-          "beautyAndBeast",
+          "duna",
+          "belaEAFera",
         ].includes(storedThemeName)
       ) {
         setThemeName(storedThemeName as ThemeName);

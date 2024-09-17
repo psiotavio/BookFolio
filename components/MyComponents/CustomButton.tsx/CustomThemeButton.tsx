@@ -19,13 +19,31 @@ const CustomThemeButton: React.FC = () => {
     setModalVisible(false);
   };
 
+  const themeLabels: Record<ThemeName, string> = {
+    light: "Claro",
+    dark: "Escuro",
+    "1984": "1984",
+    gollum: "Gollum",
+    dracula: "Drácula",
+    gatsby: "Gatsby",
+    maravilhas: "Maravilhas",
+    odisseia: "Odisseia",
+    orgulhoEPreconceito: "Orgulho e Preconceito",
+    ulisses: "Ulisses",
+    amado: "Amado",
+    fahrenheit451: "Fahrenheit 451",
+    duna: "Duna",
+    belaEAFera: "Bela e a Fera",
+  };
+
   return (
     <View style={{ width: "100%" }}>
       <CustomButton
         onPress={() => setModalVisible(true)}
-        placeholder={`Change Theme: ${themeName}`}
+        placeholder={`Mudar Tema: ${themeLabels[themeName]}`} // Usando o nome legível do tema atual
         styleType={1}
-      ></CustomButton>
+      />
+
       <Modal
         animationType="slide"
         transparent={true}
@@ -40,7 +58,7 @@ const CustomThemeButton: React.FC = () => {
             ]}
           >
             <Text style={[styles.modalText, { color: theme.text }]}>
-              Select a Theme
+              Selecione um Tema
             </Text>
             {(
               [
@@ -50,14 +68,14 @@ const CustomThemeButton: React.FC = () => {
                 "gollum",
                 "dracula",
                 "gatsby",
-                "wonderland",
-                "odyssey",
-                "pridePrejudice",
-                "ulysses",
-                "beloved",
+                "maravilhas",
+                "odisseia",
+                "orgulhoEPreconceito",
+                "ulisses",
+                "amado",
                 "fahrenheit451",
-                "dune",
-                "beautyAndBeast",
+                "duna",
+                "belaEAFera",
               ] as ThemeName[]
             ).map((themeOption) => (
               <TouchableOpacity
@@ -74,7 +92,7 @@ const CustomThemeButton: React.FC = () => {
                     },
                   ]}
                 >
-                  {themeOption}
+                  {themeLabels[themeOption]}
                 </Text>
               </TouchableOpacity>
             ))}

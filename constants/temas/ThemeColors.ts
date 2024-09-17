@@ -19,14 +19,14 @@ export const themes: Record<
   | "gollum"
   | "dracula"
   | "gatsby"
-  | "wonderland"
-  | "odyssey"
-  | "pridePrejudice"
-  | "ulysses"
-  | "beloved"
+  | "maravilhas"
+  | "odisseia"
+  | "orgulhoEPreconceito"
+  | "ulisses"
+  | "amado"
   | "fahrenheit451"
-  | "dune"
-  | "beautyAndBeast", 
+  | "duna"
+  | "belaEAFera",
   Theme
 > = {
   // Temas escuros
@@ -97,7 +97,7 @@ export const themes: Record<
     borderBottom: "rgba(0,0,0,0.15)",
     amazon: "#146EB4",
   },
-  pridePrejudice: {
+  orgulhoEPreconceito: {
     background: "#FAF9F6",
     text: "#3A3A3A",
     textSecondary: "#6E6E6E",
@@ -112,7 +112,7 @@ export const themes: Record<
   },
 
   // Temas únicos
-  wonderland: {
+  maravilhas: {
     background: "#FFFAF0", // Fundo claro com tom quente
     text: "#3B3B3B", // Texto em marrom suave
     textSecondary: "#5C5C5C",
@@ -125,7 +125,7 @@ export const themes: Record<
     borderBottom: "rgba(0,0,0,0.1)",
     amazon: "#146EB4",
   },
-  odyssey: {
+  odisseia: {
     background: "#001F3F", // Azul profundo do mar
     text: "#F0EDEE", // Texto claro
     textSecondary: "#A5A5A5",
@@ -138,7 +138,7 @@ export const themes: Record<
     borderBottom: "rgba(255, 255, 255, 0.15)",
     amazon: "#146EB4",
   },
-  ulysses: {
+  ulisses: {
     background: "#2D2D2D", // Fundo cinza escuro
     text: "#E7E7E7", // Texto claro
     textSecondary: "#A0A0A0",
@@ -153,7 +153,7 @@ export const themes: Record<
   },
 
   // Tema especial - Bela e a Fera
-  beautyAndBeast: {
+  belaEAFera: {
     background: "#F2D7D5", // Rosa claro inspirado na rosa encantada
     text: "#3C3C3C", // Texto escuro
     textSecondary: "#7B7B7B",
@@ -167,8 +167,8 @@ export const themes: Record<
     amazon: "#146EB4",
   },
 
-  // Tema baseado em "Beloved"
-  beloved: {
+  // Tema baseado em "Amado"
+  amado: {
     background: "#1C1C1C", // Fundo quase preto
     text: "#E6E6E6", // Texto claro
     textSecondary: "#CCCCCC",
@@ -197,8 +197,8 @@ export const themes: Record<
     amazon: "#146EB4",
   },
 
-  // Tema baseado em "Dune"
-  dune: {
+  // Tema baseado em "Duna"
+  duna: {
     background: "#F5E1A4", // Fundo areia
     text: "#4A4A4A", // Texto escuro
     textSecondary: "#787878",
@@ -225,4 +225,3 @@ export const themes: Record<
     amazon: "#146EB4",
   }
 };
- 
