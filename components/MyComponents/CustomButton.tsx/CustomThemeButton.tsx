@@ -20,7 +20,7 @@ const CustomThemeButton: React.FC = () => {
   };
 
   return (
-    <View style={{width: '100%'}}>
+    <View style={{ width: "100%" }}>
       <CustomButton
         onPress={() => setModalVisible(true)}
         placeholder={`Change Theme: ${themeName}`}
@@ -46,12 +46,18 @@ const CustomThemeButton: React.FC = () => {
               [
                 "light",
                 "dark",
-                "blue",
-                "orange",
-                "pink",
-                "lightpink",
-                "green",
-                "red",
+                "1984",
+                "gollum",
+                "dracula",
+                "gatsby",
+                "wonderland",
+                "odyssey",
+                "pridePrejudice",
+                "ulysses",
+                "beloved",
+                "fahrenheit451",
+                "dune",
+                "beautyAndBeast",
               ] as ThemeName[]
             ).map((themeOption) => (
               <TouchableOpacity

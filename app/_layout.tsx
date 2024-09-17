@@ -7,6 +7,10 @@ import "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ThemeProvider } from "../constants/temas/ThemeContext";
 import { UserProvider } from "../contexts/UserContext";
+import { LogBox } from "react-native";
+import { DictionaryProvider } from "../contexts/DictionaryContext";
+
+LogBox.ignoreLogs(["Support for defaultProps will be removed"]); // Suprimir o warning específico
 
 export { ErrorBoundary } from "expo-router";
 
@@ -39,9 +43,11 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <UserProvider>
-        <ThemeProvider>
-          <RootLayoutNav />
-        </ThemeProvider>
+        <DictionaryProvider>
+          <ThemeProvider>
+            <RootLayoutNav />
+          </ThemeProvider>
+        </DictionaryProvider>
       </UserProvider>
     </SafeAreaProvider>
   );
@@ -49,9 +55,9 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   return (
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-      </Stack>
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+    </Stack>
   );
 }

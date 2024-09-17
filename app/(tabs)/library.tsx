@@ -124,6 +124,7 @@ export default function Library() {
             style={[
               styles.toggleButton,
               {
+                
                 backgroundColor:
                   view === "Lidos"
                     ? theme.details
@@ -134,7 +135,7 @@ export default function Library() {
               setView("Lidos"), setShowBest(true);
             }}
           >
-            <Text style={[styles.toggleButtonText, { color: theme.text }]}>
+            <Text style={[styles.toggleButtonText,  { color: view === "Lidos" ?  theme.textButtons : theme.text}]}>
               Lidos
             </Text>
           </TouchableOpacity>
@@ -150,7 +151,7 @@ export default function Library() {
             ]}
             onPress={() => {setView("Ler mais tarde") , setShowBest(false);}}
           >
-            <Text style={[styles.toggleButtonText, { color: theme.text }]}>
+            <Text style={[styles.toggleButtonText, { color: view === "Ler mais tarde" ?  theme.textButtons : theme.text}]}>
               Ler mais tarde
             </Text>
           </TouchableOpacity>

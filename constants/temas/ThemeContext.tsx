@@ -8,16 +8,21 @@ import React, {
 import { themes, Theme } from "./ThemeColors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-
 export type ThemeName =
   | "light"
   | "dark"
-  | "blue"
-  | "orange"
-  | "pink"
-  | "lightpink"
-  | "green"
-  | "red";
+  | "1984"
+  | "gollum"
+  | "dracula"
+  | "gatsby"
+  | "wonderland"
+  | "odyssey"
+  | "pridePrejudice"
+  | "ulysses"
+  | "beloved"
+  | "fahrenheit451"
+  | "dune"
+  | "beautyAndBeast";
 type ThemeContextType = {
   theme: Theme;
   setThemeName: (themeName: ThemeName) => void;
@@ -41,12 +46,18 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
         [
           "light",
           "dark",
-          "blue",
-          "orange",
-          "pink",
-          "lightpink",
-          "green",
-          "red",
+          "1984",
+          "gollum",
+          "dracula",
+          "gatsby",
+          "wonderland",
+          "odyssey",
+          "pridePrejudice",
+          "ulysses",
+          "beloved",
+          "fahrenheit451",
+          "dune",
+          "beautyAndBeast",
         ].includes(storedThemeName)
       ) {
         setThemeName(storedThemeName as ThemeName);

@@ -14,7 +14,6 @@ import { useUser } from "../../contexts/UserContext";
 import { Livro } from "../../interfaces/Livro";
 import {
   SafeAreaView,
-  useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import CustomModalBook from "../../components/MyComponents/CustomModalBook/CustomModalBook";
 import CustomPhoto from "../../components/MyComponents/CustomPhoto/CustomPhoto";
@@ -49,7 +48,6 @@ export default function TabOneScreen() {
   const [currentRating, setCurrentRating] = useState(0);
   const [showBest, setShowBest] = useState(false);
   const [isAddBookModalVisible, setIsAddBookModalVisible] = useState(false); // Estado para controlar o modal de adicionar livro
-
   const handleBookPress = (book: Livro) => {
     setSelectedBook(book);
     setCurrentRating(book.Review || 0); 
