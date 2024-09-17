@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { BottomNavigation } from 'react-native-paper';
 import { useTheme } from "../../constants/temas/ThemeContext";
+import { useDictionary } from "../../contexts/DictionaryContext"; // Importando o hook de tradução
 import TabOneScreen from '.';
 import TabTwoScreen from './profile';
 import Recomendations from './recomendations';
@@ -10,13 +11,24 @@ import Library from './library';
 
 export default function TabLayout() {
   const { theme, themeName } = useTheme();
+  const { t } = useDictionary(); // Usando o dicionário de tradução
   const [index, setIndex] = useState(0);
-  const [routes] = useState([
-    { key: 'home', title: 'Home', focusedIcon: "home", unfocusedIcon: "home-outline" },
-    { key: 'recomendations', title: 'Recomendações', focusedIcon: "star", unfocusedIcon: "star-outline" },
-    { key: 'library', title: 'Biblioteca', focusedIcon: "book", unfocusedIcon: "book-outline" },
-    { key: 'tabTwo', title: 'Perfil', focusedIcon: "cog", unfocusedIcon: "cog-outline" },
+  const [routes, setRoutes] = useState([
+    { key: 'home', title: t('home'), focusedIcon: "home", unfocusedIcon: "home-outline" },
+    { key: 'recomendations', title: t('recomendations'), focusedIcon: "star", unfocusedIcon: "star-outline" },
+    { key: 'library', title: t('library'), focusedIcon: "book", unfocusedIcon: "book-outline" },
+    { key: 'tabTwo', title: t('profile'), focusedIcon: "cog", unfocusedIcon: "cog-outline" },
   ]);
+
+  // Atualiza as rotas sempre que a função de tradução for alterada
+  useEffect(() => {
+    setRoutes([
+      { key: 'home', title: t('home'), focusedIcon: "home", unfocusedIcon: "home-outline" },
+      { key: 'recomendations', title: t('recomendations'), focusedIcon: "star", unfocusedIcon: "star-outline" },
+      { key: 'library', title: t('library'), focusedIcon: "book", unfocusedIcon: "book-outline" },
+      { key: 'tabTwo', title: t('profile'), focusedIcon: "cog", unfocusedIcon: "cog-outline" },
+    ]);
+  }, [t]);
 
   const renderScene = BottomNavigation.SceneMap({
     home: TabOneScreen,

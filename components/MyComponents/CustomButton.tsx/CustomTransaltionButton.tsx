@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Importando AsyncStorage
 import { useDictionary } from "../../../contexts/DictionaryContext"; // Hook de tradução
 import CustomButton from "./CustomButton";
 
@@ -13,10 +14,38 @@ const CustomTranslationButton: React.FC = () => {
   const { language, setLanguage, t } = useDictionary(); // Adicionando tradução
   const [modalVisible, setModalVisible] = useState(false);
 
+  // Função para salvar a linguagem selecionada no AsyncStorage
+  const saveLanguageToStorage = async (newLanguage: string) => {
+    try {
+      await AsyncStorage.setItem("selectedLanguage", newLanguage);
+    } catch (error) {
+      console.error("Erro ao salvar idioma no AsyncStorage", error);
+    }
+  };
+
+  // Função para mudar a linguagem e salvar no AsyncStorage
   const handleLanguageChange = (newLanguage: string) => {
     setLanguage(newLanguage);
+    saveLanguageToStorage(newLanguage);
     setModalVisible(false);
   };
+
+  // Função para carregar o idioma salvo no AsyncStorage
+  const loadLanguageFromStorage = async () => {
+    try {
+      const savedLanguage = await AsyncStorage.getItem("selectedLanguage");
+      if (savedLanguage) {
+        setLanguage(savedLanguage); // Define o idioma salvo
+      }
+    } catch (error) {
+      console.error("Erro ao carregar idioma do AsyncStorage", error);
+    }
+  };
+
+  // Carregar o idioma salvo quando o componente for montado
+  useEffect(() => {
+    loadLanguageFromStorage();
+  }, []);
 
   const languageLabels: Record<string, string> = {
     pt: t("portugues"),

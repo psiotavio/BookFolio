@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Importando AsyncStorage
 
 interface TranslationsDictionary {
   pt: Translations;
@@ -90,6 +91,9 @@ export interface Translations {
   releaseDate: string;
   read: string;
   readLater: string;
+  home: string;
+  recomendations: string;
+  library: string;
 }
 
 const translations: TranslationsDictionary = {
@@ -176,6 +180,9 @@ const translations: TranslationsDictionary = {
     readLater: "Ler mais tarde",
     rateBook: "Avalie o Livro",
     confirm: "Confirmar",
+    home: "Home",
+    recomendations: "Recomendações",
+    library: "Biblioteca",
   },
   es: {
     melhores: "Mejores",
@@ -260,6 +267,9 @@ const translations: TranslationsDictionary = {
     readLater: "Leer más tarde",
     rateBook: "Califica el Libro",
     confirm: "Confirmar",
+    home: "Inicio",
+    recomendations: "Recomendaciones",
+    library: "Biblioteca",
   },
   fr: {
     melhores: "Meilleurs",
@@ -344,6 +354,9 @@ const translations: TranslationsDictionary = {
     readLater: "Lire plus tard",
     rateBook: "Évaluez le Livre",
     confirm: "Confirmer",
+    home: "Accueil",
+    recomendations: "Recommandations",
+    library: "Bibliothèque",
   },
   en: {
     melhores: "Best",
@@ -428,6 +441,9 @@ const translations: TranslationsDictionary = {
     readLater: "Read Later",
     rateBook: "Rate the Book",
     confirm: "Confirm",
+    home: "Home",
+    recomendations: "Recommendations",
+    library: "Library",
   },
 };
 
@@ -444,6 +460,32 @@ const DictionaryContext = createContext<DictionaryContextType | undefined>(
 export const DictionaryProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguage] = useState<string>("pt");
 
+  useEffect(() => {
+    // Carrega o idioma do AsyncStorage quando o app inicializa
+    const loadLanguage = async () => {
+      try {
+        const storedLanguage = await AsyncStorage.getItem('appLanguage');
+        if (storedLanguage) {
+          setLanguage(storedLanguage);
+        }
+      } catch (error) {
+        console.error('Erro ao carregar a linguagem:', error);
+      }
+    };
+
+    loadLanguage();
+  }, []);
+
+  const saveLanguage = async (newLanguage: string) => {
+    try {
+      await AsyncStorage.setItem('appLanguage', newLanguage);
+      setLanguage(newLanguage);
+    } catch (error) {
+      console.error('Erro ao salvar a linguagem:', error);
+    }
+  };
+
+
   const t = (key: keyof Translations): string => {
     const translation =
       translations[language as keyof TranslationsDictionary][key];
@@ -451,7 +493,8 @@ export const DictionaryProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <DictionaryContext.Provider value={{ language, setLanguage, t }}>
+    <DictionaryContext.Provider value={{ language, setLanguage: saveLanguage, t }}>
+    
       {children}
     </DictionaryContext.Provider>
   );
