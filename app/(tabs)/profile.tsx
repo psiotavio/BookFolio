@@ -15,6 +15,7 @@ import CustomButton from "../../components/MyComponents/CustomButton.tsx/CustomB
 import { useUser } from "../../contexts/UserContext";
 import ReadingProgress from "../../components/MyComponents/ProgressBar/ProgressBar";
 import { fetchBookRecommendationsByGenre } from "@/services/BookService";
+import CustomTranslationButton from "@/components/MyComponents/CustomButton.tsx/CustomTransaltionButton";
 
 export default function TabTwoScreen() {
   const { theme } = useTheme();
@@ -41,6 +42,7 @@ export default function TabTwoScreen() {
         {showSettings ? (
           <View style={styles.settingsContainer}>
             <CustomThemeButton />
+            <CustomTranslationButton />
             <CustomButton
               onPress={clearAll}
               placeholder={"Resetar Conta"}

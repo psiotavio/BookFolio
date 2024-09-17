@@ -15,8 +15,10 @@ import CustomModalBook from "../../components/MyComponents/CustomModalBook/Custo
 import CustomPhoto from "../../components/MyComponents/CustomPhoto/CustomPhoto";
 import FiveStarReview from "../../components/MyComponents/FiveStarComponent/FiveStarComponent";
 import CustomModalBookLido from "@/components/MyComponents/CustomModalBook/CustomModalBookLido";
+import { useDictionary } from "@/contexts/DictionaryContext";
 
 export default function Library() {
+  const { t } = useDictionary(); // Hook de traduções
   const { theme } = useTheme();
   const { biblioteca, livrosLidos, updateLivroReview } = useUser();
   const [selectedBook, setSelectedBook] = useState<Livro | null>(null);
@@ -57,7 +59,7 @@ export default function Library() {
       <View style={styles.bookListContent}>
         <View style={styles.photoAndNumber}>
           <Text style={[styles.bestText, { color: theme.textButtons }]}>
-            {index + 1}º
+            {index + 1}{t('sufixoNumero')}
           </Text>
           <CustomPhoto
             uri={
@@ -124,7 +126,6 @@ export default function Library() {
             style={[
               styles.toggleButton,
               {
-                
                 backgroundColor:
                   view === "Lidos"
                     ? theme.details
@@ -136,7 +137,7 @@ export default function Library() {
             }}
           >
             <Text style={[styles.toggleButtonText,  { color: view === "Lidos" ?  theme.textButtons : theme.text}]}>
-              Lidos
+              {t('lidos')}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -152,7 +153,7 @@ export default function Library() {
             onPress={() => {setView("Ler mais tarde") , setShowBest(false);}}
           >
             <Text style={[styles.toggleButtonText, { color: view === "Ler mais tarde" ?  theme.textButtons : theme.text}]}>
-              Ler mais tarde
+              {t('lerMaisTarde')}
             </Text>
           </TouchableOpacity>
         </View>

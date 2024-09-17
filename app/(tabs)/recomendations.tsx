@@ -14,39 +14,24 @@ import { Livro } from "../../interfaces/Livro";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomModalBook from "../../components/MyComponents/CustomModalBook/CustomModalBook";
 import CustomPhoto from "../../components/MyComponents/CustomPhoto/CustomPhoto";
-import CustomButton from "@/components/MyComponents/CustomButton.tsx/CustomButton";
-import ButtonGenre from "@/components/MyComponents/CustomButton.tsx/CustomGenreButton";
+import { useDictionary } from "@/contexts/DictionaryContext"; // Adicionando o hook de tradução
 import { fetchBookRecommendationsByGenre } from "@/services/BookService";
-
-const monthNames = [
-  "Janeiro",
-  "Fevereiro",
-  "Março",
-  "Abril",
-  "Maio",
-  "Junho",
-  "Julho",
-  "Agosto",
-  "Setembro",
-  "Outubro",
-  "Novembro",
-  "Dezembro",
-];
 
 export default function Recomendations() {
   const { theme } = useTheme();
+  const { t } = useDictionary(); // Hook de traduções
   const { livrosRecomendados } = useUser();
   const [selectedBook, setSelectedBook] = useState<Livro | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [recommendedBooks, setRecommendedBooks] =
     useState<Livro[]>(livrosRecomendados);
-  const [selectedGenre, setSelectedGenre] = useState("Recomendado para você");
+  const [selectedGenre, setSelectedGenre] = useState(t("recomendadoParaVoce"));
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
 
   useEffect(() => {
     const fetchRecommendations = async () => {
-      if (selectedGenre === "Recomendado para você") {
+      if (selectedGenre === t("recomendadoParaVoce")) {
         setRecommendedBooks(livrosRecomendados); // Mostrar lista atual de livros recomendados
         return;
       }
@@ -60,7 +45,7 @@ export default function Recomendations() {
   }, [selectedGenre]);
 
   const loadMoreBooks = async () => {
-    if (loading || selectedGenre === "Recomendado para você") return;
+    if (loading || selectedGenre === t("recomendadoParaVoce")) return;
 
     setLoading(true);
     try {
@@ -72,7 +57,7 @@ export default function Recomendations() {
       setRecommendedBooks((prevBooks) => [...prevBooks, ...books]);
       setPage(newPage);
     } catch (error) {
-      console.error("Error loading more books:", error);
+      console.error(t("carregandoMaisLivros"), error);
     } finally {
       setLoading(false);
     }
@@ -121,24 +106,20 @@ export default function Recomendations() {
 
         <View style={styles.recommendedView}>
           <View style={styles.recommendedFilterSection}>
-             <Text style={[styles.listTitle, { color: theme.text }]}>
-              {selectedGenre === "Recomendado para você"
-                ? "Livros Recomendados"
-                : `Livros do Gênero: ${selectedGenre}`}
-            </Text> 
+            <Text style={[styles.listTitle, { color: theme.text }]}>
+              {t("livrosRecomendados")}
+            </Text>
             <View style={{ width: "80%", alignSelf: "center" }}>
-              <View style={[styles.recomendationButton, { backgroundColor: theme.details}]}>
-                <Text style={[styles.buttonText, {color: theme.textButtons}]}>
-                  Recomendados para Você
+              <View
+                style={[
+                  styles.recomendationButton,
+                  { backgroundColor: theme.details },
+                ]}
+              >
+                <Text style={[styles.buttonText, { color: theme.textButtons }]}>
+                  {t("recomendadosParaVoce")}
                 </Text>
               </View>
-              {/* <ButtonGenre
-                selectedGenre={selectedGenre}
-                onSelectGenre={(genre) => {
-                  setSelectedGenre(genre);
-                  setPage(1); // Reset page when changing genre
-                }}
-              /> */}
             </View>
           </View>
           <FlatList
@@ -157,7 +138,7 @@ export default function Recomendations() {
             }
             ListEmptyComponent={() => (
               <Text style={[styles.emptyMessage, { color: theme.text }]}>
-                Nenhum livro encontrado.
+                {t("nenhumLivroEncontrado")}
               </Text>
             )}
           />
@@ -256,16 +237,16 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     gap: 20,
   },
-  recomendationButton:{
+  recomendationButton: {
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    alignItems: 'center',
+    alignItems: "center",
     marginHorizontal: 5,
-    marginTop: 15
+    marginTop: 15,
   },
-  buttonText:{
+  buttonText: {
     fontSize: 16,
-    fontWeight: 'bold',
-  }
+    fontWeight: "bold",
+  },
 });

@@ -12,9 +12,7 @@ import SearchBar from "../../components/MyComponents/SearchBar/SearchBar";
 import { useTheme } from "../../constants/temas/ThemeContext";
 import { useUser } from "../../contexts/UserContext";
 import { Livro } from "../../interfaces/Livro";
-import {
-  SafeAreaView,
-} from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import CustomModalBook from "../../components/MyComponents/CustomModalBook/CustomModalBook";
 import CustomPhoto from "../../components/MyComponents/CustomPhoto/CustomPhoto";
 import FiveStarReview from "../../components/MyComponents/FiveStarComponent/FiveStarComponent";
@@ -24,30 +22,19 @@ import CustomButton from "@/components/MyComponents/CustomButton.tsx/CustomButto
 import CustomModalAddBook from "@/components/MyComponents/CustomModalBook/CustomModalAddBook";
 import { CheckBox } from "react-native-elements";
 import { Ionicons } from '@expo/vector-icons'; // Importando o ícone
-
-const monthNames = [
-  "Janeiro",
-  "Fevereiro",
-  "Março",
-  "Abril",
-  "Maio",
-  "Junho",
-  "Julho",
-  "Agosto",
-  "Setembro",
-  "Outubro",
-  "Novembro",
-  "Dezembro",
-];
+import { useDictionary } from "../../contexts/DictionaryContext"; // Importa o hook de traduções
+import { Translations } from "../../contexts/DictionaryContext"; // Ajuste o caminho conforme necessário
 
 export default function TabOneScreen() {
   const { theme } = useTheme();
   const { livrosLidos, updateLivroReview } = useUser();
+  const { t } = useDictionary(); // Usa o hook de traduções
   const [selectedBook, setSelectedBook] = useState<Livro | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentRating, setCurrentRating] = useState(0);
   const [showBest, setShowBest] = useState(false);
   const [isAddBookModalVisible, setIsAddBookModalVisible] = useState(false); // Estado para controlar o modal de adicionar livro
+  
   const handleBookPress = (book: Livro) => {
     setSelectedBook(book);
     setCurrentRating(book.Review || 0); 
@@ -67,7 +54,7 @@ export default function TabOneScreen() {
   };
 
   const handleAddBook = (newBook: any) => {
-    console.log("Livro adicionado:", newBook);
+    console.log(`${t('livroAdicionado')}`, newBook);
     setIsAddBookModalVisible(false);
   };
 
@@ -96,7 +83,8 @@ export default function TabOneScreen() {
     const groupedBooks: { [key: string]: Livro[] } = {};
     books.forEach((book) => {
       const date = new Date(book.LidoQuando!);
-      const monthYear = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+      const monthName = t(getMonthTranslationKey(date.getMonth()));
+      const monthYear = `${monthName} ${date.getFullYear()}`;
       if (!groupedBooks[monthYear]) {
         groupedBooks[monthYear] = [];
       }
@@ -110,6 +98,15 @@ export default function TabOneScreen() {
     }
 
     return groupedBooks;
+  };
+
+  // Helper para obter o nome do mês
+  const getMonthTranslationKey = (monthIndex: number): keyof Translations => {
+    const monthKeys: (keyof Translations)[] = [
+      'janeiro', 'fevereiro', 'marco', 'abril', 'maio', 'junho',
+      'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'
+    ];
+    return monthKeys[monthIndex];
   };
 
   const groupedBooks = groupBooksByMonthYear(livrosLidos);
@@ -134,7 +131,7 @@ export default function TabOneScreen() {
         <View style={styles.toggleContainer}>
           <CheckBox
             center
-            title="Melhores"
+            title={t('melhores')}
             iconRight={true}
             size={20}
             checkedIcon="dot-circle-o"
@@ -165,11 +162,11 @@ export default function TabOneScreen() {
 
                 const dateA = new Date(
                   parseInt(yearA, 10),
-                  monthNames.indexOf(monthA)
+                  new Date().toLocaleString('pt-BR', { month: 'long' }).indexOf(monthA)
                 );
                 const dateB = new Date(
                   parseInt(yearB, 10),
-                  monthNames.indexOf(monthB)
+                  new Date().toLocaleString('pt-BR', { month: 'long' }).indexOf(monthB)
                 );
 
                 return dateB.getTime() - dateA.getTime();
@@ -177,7 +174,7 @@ export default function TabOneScreen() {
               .map((monthYear) => (
                 <View key={monthYear} style={{ marginVertical: 20 }}>
                   <Text style={[styles.listTitle, { color: theme.text }]}>
-                    Livros Lidos em {monthYear}
+                    {`${t('livrosLidosEm')} ${monthYear}`}
                   </Text>
                   <FlatList
                     data={groupedBooks[monthYear]}
