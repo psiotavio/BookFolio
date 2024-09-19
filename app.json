@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "BookFolio",
-    "slug": "BookFolio",
+    "name": "Readfolio",
+    "slug": "Readfolio",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -9,17 +9,19 @@
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "cover",
+      "backgroundColor": "#1A1316"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.psiotavio.Readfolio"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "backgroundColor": "#1A1316"
+      },
+      "package": "com.psiotavio.Readfolio"
     },
     "web": {
       "bundler": "metro",
@@ -31,6 +33,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "0d470c68-81e5-437a-9e8f-626ee31888aa"
+      }
+    },
+    "owner": "psiotavio"
   }
 }
