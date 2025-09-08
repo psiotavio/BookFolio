@@ -14,7 +14,8 @@ export interface Translations {
   livroAdicionado: string;
   adicionarLivro: string;
   lidos: string;
-  lerMaisTarde: string;
+  queroLer: string;
+  lendo: string;
   sufixoNumero: string;
   fechar: string;
   recomendadoParaVoce: string;
@@ -127,7 +128,8 @@ const translations: TranslationsDictionary = {
     livroAdicionado: "Livro adicionado:",
     adicionarLivro: "Adicionar Livro",
     lidos: "Lidos",
-    lerMaisTarde: "Ler mais tarde",
+    queroLer: "Quero ler",
+    lendo: "Lendo",
     sufixoNumero: "º",
     fechar: "Fechar",
     recomendadoParaVoce: "Recomendado para você",
@@ -238,7 +240,8 @@ const translations: TranslationsDictionary = {
     livroAdicionado: "Libro añadido:",
     adicionarLivro: "Agregar Libro",
     lidos: "Leídos",
-    lerMaisTarde: "Leer más tarde",
+    queroLer: "Quiero leer",
+    lendo: "Leyendo",
     sufixoNumero: "º",
     fechar: "Cerrar",
     recomendadoParaVoce: "Recomendado para ti",
@@ -349,7 +352,8 @@ const translations: TranslationsDictionary = {
     livroAdicionado: "Livre ajouté:",
     adicionarLivro: "Ajouter Livre",
     lidos: "Lus",
-    lerMaisTarde: "Lire plus tard",
+    queroLer: "Je veux lire",
+    lendo: "En train de lire",
     sufixoNumero: "º",
     fechar: "Fermer",
     recomendadoParaVoce: "Recommandé pour vous",
@@ -460,7 +464,8 @@ const translations: TranslationsDictionary = {
     livroAdicionado: "Book added:",
     adicionarLivro: "Add Book",
     lidos: "Read",
-    lerMaisTarde: "Read Later",
+    queroLer: "Want to Read",
+    lendo: "Reading",
     sufixoNumero: "th",
     fechar: "Close",
     recomendadoParaVoce: "Recommended for you",

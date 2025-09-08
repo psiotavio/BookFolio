@@ -17,18 +17,19 @@ import CustomRating from "../../components/MyComponents/CustomRating/CustomRatin
 import { useDictionary } from "@/contexts/DictionaryContext";
 import EmptyState from "../../components/MyComponents/EmptyState/EmptyState";
 import { useNavigationContext } from "../../contexts/NavigationContext";
+import CustomButton from "../../components/MyComponents/CustomButton.tsx/CustomButton";
 
 export default function Library() {
   const { t } = useDictionary(); // Hook de traduções
   const { theme } = useTheme();
-  const { biblioteca, livrosLidos, updateLivroReview } = useUser();
+  const { biblioteca, livrosLidos, livrosLendo, updateLivroReview } = useUser();
   const { setShouldFocusSearchBar, setShouldNavigateToHome } = useNavigationContext();
   const [selectedBook, setSelectedBook] = useState<Livro | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showBest, setShowBest] = useState(false); // Estado para o toggle "Melhores"
-  const [view, setView] = useState<"Lidos" | "Ler mais tarde">(
-    "Ler mais tarde"
-  ); // Estado para alternar entre "Lidos" e "Ler mais tarde"
+  const [view, setView] = useState<"Lidos" | "Quero ler" | "Lendo">(
+    "Quero ler"
+  ); // Estado para alternar entre "Lidos", "Quero ler" e "Lendo"
 
   const handleBookPress = (book: Livro) => {
     console.log(`📖 LIVRO SELECIONADO: "${book.title}"`);
@@ -133,40 +134,32 @@ export default function Library() {
         </View>
 
         <View style={styles.toggleContainer}>
-          <TouchableOpacity
-            style={[
-              styles.toggleButton,
-              {
-                backgroundColor:
-                  view === "Lidos"
-                    ? theme.details
-                    : theme.modalBackgroundSecondary,
-              },
-            ]}
+          <CustomButton
             onPress={() => {
               setView("Lidos"), setShowBest(true);
             }}
-          >
-            <Text style={[styles.toggleButtonText,  { color: view === "Lidos" ?  theme.textButtons : theme.text}]}>
-              {t('lidos')}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.toggleButton,
-              {
-                backgroundColor:
-                  view === "Ler mais tarde"
-                    ? theme.details
-                    : theme.modalBackgroundSecondary,
-              },
-            ]}
-            onPress={() => {setView("Ler mais tarde") , setShowBest(false);}}
-          >
-            <Text style={[styles.toggleButtonText, { color: view === "Ler mais tarde" ?  theme.textButtons : theme.text}]}>
-              {t('lerMaisTarde')}
-            </Text>
-          </TouchableOpacity>
+            placeholder={t('lidos')}
+            styleType={view === "Lidos" ? 1 : 2}
+            size="small"
+            //fullWidth={false}
+            height={36}
+          />
+          <CustomButton
+            onPress={() => {setView("Lendo"), setShowBest(false);}}
+            placeholder={t('lendo')}
+            styleType={view === "Lendo" ? 1 : 2}
+            size="small"
+           // fullWidth={false}
+            height={36}
+          />
+          <CustomButton
+            onPress={() => {setView("Quero ler") , setShowBest(false);}}
+            placeholder={t('queroLer')}
+            styleType={view === "Quero ler" ? 1 : 2}
+            size="small"
+           // fullWidth={false}
+            height={36}
+          />
         </View>
 
         {view === "Lidos" ? (
@@ -194,7 +187,32 @@ export default function Library() {
               />
             </View>
           )
-        ) : (
+        ) : view === "Lendo" ? (
+          livrosLendo.length === 0 ? (
+            <EmptyState
+              icon="book-outline"
+              title="Nenhum livro sendo lido"
+              subtitle="Adicione livros que você está lendo atualmente"
+              actionText="Adicionar livro"
+              onAction={() => {
+                // Navegar para a tela home (index) e focar na SearchBar
+                setShouldFocusSearchBar(true);
+                setShouldNavigateToHome(true);
+              }}
+            />
+          ) : (
+            <View style={styles.readedView}>
+              <FlatList
+                data={livrosLendo}
+                renderItem={renderBookItemLidos}
+                keyExtractor={(item) => item.id}
+                key="lendo" // chave única para forçar a recriação da FlatList
+                horizontal={false}
+                style={styles.list}
+              />
+            </View>
+          )
+        ) : view === "Quero ler" ? (
           biblioteca.length === 0 ? (
             <EmptyState
               icon="library-outline"
@@ -220,19 +238,19 @@ export default function Library() {
               />
             </View>
           )
-        )}
+        ) : null}
       </View>
-      {selectedBook && !showBest &&(
+      {selectedBook && (view === "Quero ler" || view === "Lendo") && (
         <UnifiedBookModal
           isVisible={isModalVisible}
           book={selectedBook}
           onClose={closeModal}
           modalType="view"
-          removeFromLibrary={true}
+          removeFromLibrary={view === "Quero ler"}
         />
       )}
 
-      {selectedBook && showBest && (
+      {selectedBook && view === "Lidos" && (
         <UnifiedBookModal
           isVisible={isModalVisible}
           book={selectedBook}
@@ -327,21 +345,9 @@ const styles = StyleSheet.create({
   toggleContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    marginVertical: 5,
-    width: '80%',
-    alignSelf:'center'
-  },
-  toggleButton: {
-    paddingVertical: 10,
+    marginVertical: 8,
     paddingHorizontal: 20,
-    marginHorizontal: 10,
-    borderRadius: 20,
-    flex: 1,
-    alignItems:'center'
-  },
-  toggleButtonText: {
-    fontSize: 16,
-    fontWeight: "bold",
+    gap: 8,
   },
   bestText: {
     fontSize: 24,

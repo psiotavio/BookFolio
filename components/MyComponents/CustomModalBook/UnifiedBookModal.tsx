@@ -495,6 +495,7 @@ const UnifiedBookModal: React.FC<UnifiedBookModalProps> = ({
         livrosLidos,
         addLivroLido,
         addLivroBiblioteca,
+        addLivroLendo,
         removeLivroBiblioteca,
         removeLivroRecomendados,
         removeLivroLido,
@@ -1174,6 +1175,19 @@ const UnifiedBookModal: React.FC<UnifiedBookModalProps> = ({
                                  }}
                                  placeholder="Já Li"
                                  styleType={1}
+                                 size="small"
+                                 fontSize={12}
+                                 height={36}
+                             />
+                             <CustomButton
+                                 onPress={() => {
+                                     if (book) {
+                                         addLivroLendo(book);
+                                         onClose();
+                                     }
+                                 }}
+                                 placeholder="Lendo"
+                                 styleType={3}
                                  size="small"
                                  fontSize={12}
                                  height={36}

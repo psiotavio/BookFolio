@@ -13,11 +13,14 @@ import { useDictionary } from "./DictionaryContext";
 interface UserContextType {
   livrosLidos: Livro[];
   biblioteca: Livro[];
+  livrosLendo: Livro[];
   livrosRecomendados: Livro[];
   addLivroLido: (livro: Livro) => void;
   addLivroBiblioteca: (livro: Livro) => void;
+  addLivroLendo: (livro: Livro) => void;
   removeLivroLido: (id: string) => void;
   removeLivroBiblioteca: (id: string) => void;
+  removeLivroLendo: (id: string) => void;
   removeLivroRecomendados:(id: string) => void;
   updateLivroReview: (id: string, newReview: number) => void;
   clearAll: () => void;
@@ -32,15 +35,17 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
   const [livrosRecomendados, setLivrosRecomendados] = useState<Livro[]>([]);
   const [livrosLidos, setLivrosLidos] = useState<Livro[]>([]);
   const [biblioteca, setBiblioteca] = useState<Livro[]>([]);
+  const [livrosLendo, setLivrosLendo] = useState<Livro[]>([]);
   const { language } = useDictionary(); // Obtendo o idioma atual do app
 
   useEffect(() => {
     
     const loadStorageData = async () => {
       try {
-        const [storedLivrosLidos, storedBiblioteca, storedLivrosRecomendados] = await Promise.all([
+        const [storedLivrosLidos, storedBiblioteca, storedLivrosLendo, storedLivrosRecomendados] = await Promise.all([
           AsyncStorage.getItem("livrosLidos"),
           AsyncStorage.getItem("biblioteca"),
+          AsyncStorage.getItem("livrosLendo"),
           AsyncStorage.getItem("livrosRecomendados")
         ]);
 
@@ -51,6 +56,11 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
         if (storedBiblioteca) {
           const parsedBiblioteca = JSON.parse(storedBiblioteca);
           setBiblioteca(parsedBiblioteca);
+        }
+
+        if (storedLivrosLendo) {
+          const parsedLivrosLendo = JSON.parse(storedLivrosLendo);
+          setLivrosLendo(parsedLivrosLendo);
         }
         if (storedLivrosRecomendados) {
           const parsedLivrosRecomendados = JSON.parse(storedLivrosRecomendados);
@@ -89,6 +99,18 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
   }, [biblioteca]);
 
   useEffect(() => {
+    const saveLivrosLendo = async () => {
+      try {
+        await AsyncStorage.setItem("livrosLendo", JSON.stringify(livrosLendo));
+      } catch (error) {
+        console.error("Erro ao salvar livros lendo:", error);
+      }
+    };
+
+    saveLivrosLendo();
+  }, [livrosLendo]);
+
+  useEffect(() => {
     const saveLivrosRecomendados = async () => {
       try {
         await AsyncStorage.setItem("livrosRecomendados", JSON.stringify(livrosRecomendados));
@@ -114,6 +136,12 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
+  const addLivroLendo = (livro: Livro) => {
+    if (!livrosLendo.some((l) => l.id === livro.id)) {
+      setLivrosLendo((prevLivrosLendo) => [...prevLivrosLendo, livro]);
+    }
+  };
+
   const removeLivroLido = (id: string) => {
     setLivrosLidos((prevLivrosLidos) =>
       prevLivrosLidos.filter((livro) => livro.id !== id)
@@ -123,6 +151,12 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
   const removeLivroBiblioteca = (id: string) => {
     setBiblioteca((prevBiblioteca) =>
       prevBiblioteca.filter((livro) => livro.id !== id)
+    );
+  };
+
+  const removeLivroLendo = (id: string) => {
+    setLivrosLendo((prevLivrosLendo) =>
+      prevLivrosLendo.filter((livro) => livro.id !== id)
     );
   };
   const removeLivroRecomendados = (id: string) => {
@@ -142,9 +176,11 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
   const clearAll = async () => {
     setLivrosLidos([]);
     setBiblioteca([]);
+    setLivrosLendo([]);
     setLivrosRecomendados([]);
     await AsyncStorage.removeItem('livrosLidos');
     await AsyncStorage.removeItem('biblioteca');
+    await AsyncStorage.removeItem('livrosLendo');
     await AsyncStorage.removeItem('livrosRecomendados');
   };
 
@@ -170,11 +206,14 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
       value={{
         livrosLidos,
         biblioteca,
+        livrosLendo,
         livrosRecomendados,
         addLivroLido,
         addLivroBiblioteca,
+        addLivroLendo,
         removeLivroLido,
         removeLivroBiblioteca,
+        removeLivroLendo,
         removeLivroRecomendados,
         updateLivroReview,
         clearAll,
