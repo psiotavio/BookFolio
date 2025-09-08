@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Image,
@@ -8,7 +8,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import SearchBar from "../../components/MyComponents/SearchBar/SearchBar";
+import SearchBar, { SearchBarRef } from "../../components/MyComponents/SearchBar/SearchBar";
 import { useTheme } from "../../constants/temas/ThemeContext";
 import { useUser } from "../../contexts/UserContext";
 import { Livro } from "../../interfaces/Livro";
@@ -21,16 +21,31 @@ import { CheckBox } from "react-native-elements";
 import { Ionicons } from '@expo/vector-icons'; // Importando o ícone
 import { useDictionary } from "../../contexts/DictionaryContext"; // Importa o hook de traduções
 import { Translations } from "../../contexts/DictionaryContext"; // Ajuste o caminho conforme necessário
+import { useNavigationContext } from "../../contexts/NavigationContext";
+import EmptyState from "../../components/MyComponents/EmptyState/EmptyState";
 
 export default function TabOneScreen() {
   const { theme } = useTheme();
   const { livrosLidos, updateLivroReview } = useUser();
   const { t } = useDictionary(); // Usa o hook de traduções
+  const { shouldFocusSearchBar, setShouldFocusSearchBar } = useNavigationContext();
   const [selectedBook, setSelectedBook] = useState<Livro | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentRating, setCurrentRating] = useState(0);
   const [showBest, setShowBest] = useState(false);
   const [isAddBookModalVisible, setIsAddBookModalVisible] = useState(false); // Estado para controlar o modal de adicionar livro
+  const searchBarRef = React.useRef<SearchBarRef>(null);
+
+  // Verificar se deve focar na SearchBar
+  useEffect(() => {
+    if (shouldFocusSearchBar) {
+      // Pequeno delay para garantir que a tela esteja carregada
+      setTimeout(() => {
+        searchBarRef.current?.focus();
+        setShouldFocusSearchBar(false); // Resetar o flag
+      }, 100);
+    }
+  }, [shouldFocusSearchBar, setShouldFocusSearchBar]);
   
   const handleBookPress = (book: Livro) => {
     console.log(`📖 LIVRO SELECIONADO: "${book.title}"`);
@@ -181,7 +196,7 @@ export default function TabOneScreen() {
             source={require("../../assets/images/logo3.png")}
             style={styles.logo}
           />
-          <SearchBar />
+          <SearchBar ref={searchBarRef} />
         </View>
 
         <View style={styles.toggleContainer}>
@@ -209,43 +224,53 @@ export default function TabOneScreen() {
           />
         </View>
 
-        <ScrollView>
-          <View style={styles.booksList}>
-            {Object.keys(groupedBooks)
-              .sort((a, b) => {
-                const [monthA, yearA] = a.split(" ");
-                const [monthB, yearB] = b.split(" ");
+        {livrosLidos.length === 0 ? (
+          <EmptyState
+            icon="book-outline"
+            title={t('empty.booksRead.title')}
+            subtitle={t('empty.booksRead.subtitle')}
+            actionText={t('empty.booksRead.action')}
+            onAction={() => searchBarRef.current?.focus()}
+          />
+        ) : (
+          <ScrollView>
+            <View style={styles.booksList}>
+              {Object.keys(groupedBooks)
+                .sort((a, b) => {
+                  const [monthA, yearA] = a.split(" ");
+                  const [monthB, yearB] = b.split(" ");
 
-                const dateA = new Date(
-                  parseInt(yearA, 10),
-                  new Date().toLocaleString('pt-BR', { month: 'long' }).indexOf(monthA)
-                );
-                const dateB = new Date(
-                  parseInt(yearB, 10),
-                  new Date().toLocaleString('pt-BR', { month: 'long' }).indexOf(monthB)
-                );
+                  const dateA = new Date(
+                    parseInt(yearA, 10),
+                    new Date().toLocaleString('pt-BR', { month: 'long' }).indexOf(monthA)
+                  );
+                  const dateB = new Date(
+                    parseInt(yearB, 10),
+                    new Date().toLocaleString('pt-BR', { month: 'long' }).indexOf(monthB)
+                  );
 
-                return dateB.getTime() - dateA.getTime();
-              })
-              .map((monthYear) => (
-                <View key={monthYear} style={{ marginVertical: 20 }}>
-                  <Text style={[styles.listTitle, { color: theme.text }]}>
-                    {`${t('livrosLidosEm')} ${monthYear}`}
-                  </Text>
-                  <FlatList
-                    data={groupedBooks[monthYear]}
-                    renderItem={(props) =>
-                      renderBookItem({ ...props, index: props.index })
-                    }
-                    keyExtractor={(item) => item.id}
-                    horizontal
-                    style={styles.list}
-                    showsHorizontalScrollIndicator={false}
-                  />
-                </View>
-              ))}
-          </View>
-        </ScrollView>
+                  return dateB.getTime() - dateA.getTime();
+                })
+                .map((monthYear) => (
+                  <View key={monthYear} style={{ marginVertical: 20 }}>
+                    <Text style={[styles.listTitle, { color: theme.text }]}>
+                      {`${t('livrosLidosEm')} ${monthYear}`}
+                    </Text>
+                    <FlatList
+                      data={groupedBooks[monthYear]}
+                      renderItem={(props) =>
+                        renderBookItem({ ...props, index: props.index })
+                      }
+                      keyExtractor={(item) => item.id}
+                      horizontal
+                      style={styles.list}
+                      showsHorizontalScrollIndicator={false}
+                    />
+                  </View>
+                ))}
+            </View>
+          </ScrollView>
+        )}
 
         {selectedBook && (
           <UnifiedBookModal
@@ -260,10 +285,10 @@ export default function TabOneScreen() {
 
         {/* Botão flutuante de adicionar livro */}
         <TouchableOpacity
-          style={styles.floatingButton}
+          style={[styles.floatingButton, { backgroundColor: theme.details }]}
           onPress={() => setIsAddBookModalVisible(true)}
         >
-          <Ionicons name="add" size={32} color="white" />
+          <Ionicons name="add" size={32} color={theme.textButtons} />
         </TouchableOpacity>
 
         {/* Modal de adicionar livro */}
@@ -303,8 +328,8 @@ const styles = StyleSheet.create({
   },
   logo: {
     marginVertical: 5,
-    width: 80,
-    height: 80,
+    width: 72,
+    height: 72,
     resizeMode: "contain",
   },
   booksList: {
@@ -355,7 +380,6 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: "#ff7b00ff",
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#000",

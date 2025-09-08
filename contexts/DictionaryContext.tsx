@@ -104,6 +104,20 @@ export interface Translations {
   'book.noSynopsisAvailable': string;
   'book.read': string;
   'book.readLater': string;
+  
+  // Empty states
+  'empty.booksRead.title': string;
+  'empty.booksRead.subtitle': string;
+  'empty.booksRead.action': string;
+  'empty.library.title': string;
+  'empty.library.subtitle': string;
+  'empty.library.action': string;
+  'empty.recommendations.title': string;
+  'empty.recommendations.subtitle': string;
+  'empty.recommendations.action': string;
+  'empty.profile.title': string;
+  'empty.profile.subtitle': string;
+  'empty.profile.action': string;
 }
 
 const translations: TranslationsDictionary = {
@@ -191,7 +205,7 @@ const translations: TranslationsDictionary = {
     rateBook: "Avalie o Livro",
     confirm: "Confirmar",
     home: "Home",
-    recomendations: "Recomendações",
+    recomendations: "Para Você",
     library: "Biblioteca",
 
     // Novas traduções para o modal de livros
@@ -203,6 +217,20 @@ const translations: TranslationsDictionary = {
     'book.noSynopsisAvailable': "Nenhuma sinopse disponível",
     'book.read': "Lido",
     'book.readLater': "Ler mais tarde",
+    
+    // Empty states
+    'empty.booksRead.title': "Nenhum livro lido ainda",
+    'empty.booksRead.subtitle': "Comece sua jornada literária adicionando seu primeiro livro",
+    'empty.booksRead.action': "Adicionar primeiro livro",
+    'empty.library.title': "Sua biblioteca está vazia",
+    'empty.library.subtitle': "Adicione livros para ler mais tarde e organize sua lista",
+    'empty.library.action': "Adicionar livros",
+    'empty.recommendations.title': "Nenhuma recomendação disponível",
+    'empty.recommendations.subtitle': "Leia alguns livros primeiro para receber recomendações personalizadas",
+    'empty.recommendations.action': "Ver livros lidos",
+    'empty.profile.title': "Bem-vindo ao BookFolio",
+    'empty.profile.subtitle': "Configure suas metas de leitura e personalize sua experiência",
+    'empty.profile.action': "Começar",
   },
   es: {
     melhores: "Mejores",
@@ -288,7 +316,7 @@ const translations: TranslationsDictionary = {
     rateBook: "Califica el Libro",
     confirm: "Confirmar",
     home: "Inicio",
-    recomendations: "Recomendaciones",
+    recomendations: "Para Ti",
     library: "Biblioteca",
 
     // Novas traduções para o modal de livros
@@ -300,6 +328,20 @@ const translations: TranslationsDictionary = {
     'book.noSynopsisAvailable': "Ninguna sinopsis disponible",
     'book.read': "Leído",
     'book.readLater': "Leer más tarde",
+    
+    // Empty states
+    'empty.booksRead.title': "Aún no has leído libros",
+    'empty.booksRead.subtitle': "Comienza tu viaje literario agregando tu primer libro",
+    'empty.booksRead.action': "Agregar primer libro",
+    'empty.library.title': "Tu biblioteca está vacía",
+    'empty.library.subtitle': "Agrega libros para leer más tarde y organiza tu lista",
+    'empty.library.action': "Agregar libros",
+    'empty.recommendations.title': "No hay recomendaciones disponibles",
+    'empty.recommendations.subtitle': "Lee algunos libros primero para recibir recomendaciones personalizadas",
+    'empty.recommendations.action': "Ver libros leídos",
+    'empty.profile.title': "Bienvenido a BookFolio",
+    'empty.profile.subtitle': "Configura tus metas de lectura y personaliza tu experiencia",
+    'empty.profile.action': "Comenzar",
   },
   fr: {
     melhores: "Meilleurs",
@@ -385,7 +427,7 @@ const translations: TranslationsDictionary = {
     rateBook: "Évaluez le Livre",
     confirm: "Confirmer",
     home: "Accueil",
-    recomendations: "Recommandations",
+    recomendations: "Pour Vous",
     library: "Bibliothèque",
 
     // Novas traduções para o modal de livros
@@ -397,6 +439,20 @@ const translations: TranslationsDictionary = {
     'book.noSynopsisAvailable': "Aucun synopsis disponible",
     'book.read': "Lu",
     'book.readLater': "Lire plus tard",
+    
+    // Empty states
+    'empty.booksRead.title': "Aucun livre lu pour le moment",
+    'empty.booksRead.subtitle': "Commencez votre voyage littéraire en ajoutant votre premier livre",
+    'empty.booksRead.action': "Ajouter le premier livre",
+    'empty.library.title': "Votre bibliothèque est vide",
+    'empty.library.subtitle': "Ajoutez des livres à lire plus tard et organisez votre liste",
+    'empty.library.action': "Ajouter des livres",
+    'empty.recommendations.title': "Aucune recommandation disponible",
+    'empty.recommendations.subtitle': "Lisez d'abord quelques livres pour recevoir des recommandations personnalisées",
+    'empty.recommendations.action': "Voir les livres lus",
+    'empty.profile.title': "Bienvenue sur BookFolio",
+    'empty.profile.subtitle': "Configurez vos objectifs de lecture et personnalisez votre expérience",
+    'empty.profile.action': "Commencer",
   },
   en: {
     melhores: "Best",
@@ -482,7 +538,7 @@ const translations: TranslationsDictionary = {
     rateBook: "Rate the Book",
     confirm: "Confirm",
     home: "Home",
-    recomendations: "Recommendations",
+    recomendations: "For You",
     library: "Library",
 
     // Novas traduções para o modal de livros
@@ -494,6 +550,20 @@ const translations: TranslationsDictionary = {
     'book.noSynopsisAvailable': "No synopsis available",
     'book.read': "Read",
     'book.readLater': "Read Later",
+    
+    // Empty states
+    'empty.booksRead.title': "No books read yet",
+    'empty.booksRead.subtitle': "Start your literary journey by adding your first book",
+    'empty.booksRead.action': "Add first book",
+    'empty.library.title': "Your library is empty",
+    'empty.library.subtitle': "Add books to read later and organize your list",
+    'empty.library.action': "Add books",
+    'empty.recommendations.title': "No recommendations available",
+    'empty.recommendations.subtitle': "Read some books first to receive personalized recommendations",
+    'empty.recommendations.action': "View read books",
+    'empty.profile.title': "Welcome to BookFolio",
+    'empty.profile.subtitle': "Set up your reading goals and personalize your experience",
+    'empty.profile.action': "Get started",
   },
 };
 

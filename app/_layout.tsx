@@ -9,6 +9,7 @@ import { ThemeProvider } from "../constants/temas/ThemeContext";
 import { UserProvider } from "../contexts/UserContext";
 import { LogBox } from "react-native";
 import { DictionaryProvider } from "../contexts/DictionaryContext";
+import { NavigationProvider } from "../contexts/NavigationContext";
 
 LogBox.ignoreLogs(["Support for defaultProps will be removed"]); // Suprimir o warning específico
 
@@ -45,7 +46,9 @@ export default function RootLayout() {
       <DictionaryProvider>
         <UserProvider>
           <ThemeProvider>
-            <RootLayoutNav />
+            <NavigationProvider>
+              <RootLayoutNav />
+            </NavigationProvider>
           </ThemeProvider>
         </UserProvider>
       </DictionaryProvider>

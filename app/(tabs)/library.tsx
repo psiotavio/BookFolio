@@ -15,11 +15,14 @@ import UnifiedBookModal from "../../components/MyComponents/CustomModalBook/Unif
 import CustomPhoto from "../../components/MyComponents/CustomPhoto/CustomPhoto";
 import FiveStarReview from "../../components/MyComponents/FiveStarComponent/FiveStarComponent";
 import { useDictionary } from "@/contexts/DictionaryContext";
+import EmptyState from "../../components/MyComponents/EmptyState/EmptyState";
+import { useNavigationContext } from "../../contexts/NavigationContext";
 
 export default function Library() {
   const { t } = useDictionary(); // Hook de traduções
   const { theme } = useTheme();
   const { biblioteca, livrosLidos, updateLivroReview } = useUser();
+  const { setShouldFocusSearchBar, setShouldNavigateToHome } = useNavigationContext();
   const [selectedBook, setSelectedBook] = useState<Livro | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showBest, setShowBest] = useState(false); // Estado para o toggle "Melhores"
@@ -159,28 +162,56 @@ export default function Library() {
         </View>
 
         {view === "Lidos" ? (
-          <View style={styles.readedView}>
-            <FlatList
-              data={orderedBooks}
-              renderItem={renderBookItemLidos}
-              keyExtractor={(item) => item.id}
-              key="lidos" // chave única para forçar a recriação da FlatList
-              horizontal={false}
-              style={styles.list}
+          livrosLidos.length === 0 ? (
+            <EmptyState
+              icon="book-outline"
+              title={t('empty.booksRead.title')}
+              subtitle={t('empty.booksRead.subtitle')}
+              actionText={t('empty.booksRead.action')}
+              onAction={() => {
+                // Navegar para a tela home (index) e focar na SearchBar
+                setShouldFocusSearchBar(true);
+                setShouldNavigateToHome(true);
+              }}
             />
-          </View>
+          ) : (
+            <View style={styles.readedView}>
+              <FlatList
+                data={orderedBooks}
+                renderItem={renderBookItemLidos}
+                keyExtractor={(item) => item.id}
+                key="lidos" // chave única para forçar a recriação da FlatList
+                horizontal={false}
+                style={styles.list}
+              />
+            </View>
+          )
         ) : (
-          <View style={styles.recommendedView}>
-            <FlatList
-              data={biblioteca}
-              renderItem={renderBookItemBiblioteca}
-              keyExtractor={(item) => item.id}
-              key="biblioteca" // chave única para forçar a recriação da FlatList
-              numColumns={3}
-              style={styles.list}
-              contentContainerStyle={styles.containerGrid}
+          biblioteca.length === 0 ? (
+            <EmptyState
+              icon="library-outline"
+              title={t('empty.library.title')}
+              subtitle={t('empty.library.subtitle')}
+              actionText={t('empty.library.action')}
+              onAction={() => {
+                // Navegar para a tela home (index) e focar na SearchBar
+                setShouldFocusSearchBar(true);
+                setShouldNavigateToHome(true);
+              }}
             />
-          </View>
+          ) : (
+            <View style={styles.recommendedView}>
+              <FlatList
+                data={biblioteca}
+                renderItem={renderBookItemBiblioteca}
+                keyExtractor={(item) => item.id}
+                key="biblioteca" // chave única para forçar a recriação da FlatList
+                numColumns={3}
+                style={styles.list}
+                contentContainerStyle={styles.containerGrid}
+              />
+            </View>
+          )
         )}
       </View>
       {selectedBook && !showBest &&(
@@ -235,8 +266,8 @@ const styles = StyleSheet.create({
   },
   logo: {
     marginVertical: 5,
-    width: 80,
-    height: 80,
+    width: 72,
+    height: 72,
     resizeMode: "contain",
   },
   booksList: {

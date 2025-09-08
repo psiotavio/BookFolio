@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import {
   View,
   TextInput,
@@ -16,7 +16,11 @@ import UnifiedBookModal from "../CustomModalBook/UnifiedBookModal";
 import { useTheme } from "../../../constants/temas/ThemeContext";
 import { useDictionary } from "@/contexts/DictionaryContext"; // Importando o hook de tradução
 
-const SearchBar = () => {
+export interface SearchBarRef {
+  focus: () => void;
+}
+
+const SearchBar = forwardRef<SearchBarRef>((props, ref) => {
   const [query, setQuery] = useState<string>("");
   const [books, setBooks] = useState<Livro[]>([]);
   const [isKeyboardDismissed, setIsKeyboardDismissed] = useState<boolean>(false);
@@ -24,6 +28,13 @@ const SearchBar = () => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const { theme } = useTheme();
   const { t, language } = useDictionary(); // Usando o idioma do contexto
+  const textInputRef = React.useRef<TextInput>(null);
+
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      textInputRef.current?.focus();
+    },
+  }));
 
   useEffect(() => {
     if (query.length > 2) {
@@ -85,6 +96,7 @@ const SearchBar = () => {
     <TouchableWithoutFeedback onPress={handleOutsidePress}>
       <View style={styles.container}>
         <TextInput
+          ref={textInputRef}
           style={[styles.searchInput, { backgroundColor: theme.modalBackground, color: theme.text, borderColor: theme.details }]}
           placeholder={t("searchBooksPlaceholder")} // Adiciona tradução ao placeholder
           placeholderTextColor={theme.text}
@@ -126,7 +138,7 @@ const SearchBar = () => {
       </View>
     </TouchableWithoutFeedback>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

@@ -16,11 +16,14 @@ import UnifiedBookModal from "../../components/MyComponents/CustomModalBook/Unif
 import CustomPhoto from "../../components/MyComponents/CustomPhoto/CustomPhoto";
 import { useDictionary } from "@/contexts/DictionaryContext"; // Adicionando o hook de tradução
 import { fetchBookRecommendationsByAuthor } from "@/services/BookService";
+import EmptyState from "../../components/MyComponents/EmptyState/EmptyState";
+import { useNavigationContext } from "../../contexts/NavigationContext";
 
 export default function Recomendations() {
   const { theme } = useTheme();
   const { t, language } = useDictionary(); // Hook de traduções com idioma
   const { livrosRecomendados, livrosLidos } = useUser();
+  const { setShouldFocusSearchBar, setShouldNavigateToHome } = useNavigationContext();
   const [selectedBook, setSelectedBook] = useState<Livro | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [recommendedBooks, setRecommendedBooks] = useState<Livro[]>([]);
@@ -112,24 +115,39 @@ export default function Recomendations() {
               </View>
             </View>
           </View>
-          <FlatList
-            data={[...recommendedBooks].reverse()} // Reverte a ordem dos itens
-            renderItem={renderBookItem}
-            keyExtractor={(item) => item.id}
-            numColumns={3}
-            style={styles.list}
-            contentContainerStyle={styles.containerGrid}
-            ListFooterComponent={() =>
-              loading ? (
-                <ActivityIndicator size="large" color={theme.text} />
-              ) : null
-            }
-            ListEmptyComponent={() => (
-              <Text style={[styles.emptyMessage, { color: theme.text }]}>
-                {t("nenhumLivroEncontrado")}
-              </Text>
-            )}
-          />
+          
+          {livrosLidos.length === 0 ? (
+            <EmptyState
+              icon="bulb-outline"
+              title={t('empty.recommendations.title')}
+              subtitle={t('empty.recommendations.subtitle')}
+              actionText={t('empty.recommendations.action')}
+              onAction={() => {
+                // Navegar para a tela home e focar na SearchBar
+                setShouldFocusSearchBar(true);
+                setShouldNavigateToHome(true);
+              }}
+            />
+          ) : (
+            <FlatList
+              data={[...recommendedBooks].reverse()} // Reverte a ordem dos itens
+              renderItem={renderBookItem}
+              keyExtractor={(item) => item.id}
+              numColumns={3}
+              style={styles.list}
+              contentContainerStyle={styles.containerGrid}
+              ListFooterComponent={() =>
+                loading ? (
+                  <ActivityIndicator size="large" color={theme.text} />
+                ) : null
+              }
+              ListEmptyComponent={() => (
+                <Text style={[styles.emptyMessage, { color: theme.text }]}>
+                  {t("nenhumLivroEncontrado")}
+                </Text>
+              )}
+            />
+          )}
         </View>
       </View>
       {selectedBook && (
@@ -164,8 +182,8 @@ const styles = StyleSheet.create({
   },
   logo: {
     marginVertical: 5,
-    width: 80,
-    height: 80,
+    width: 72,
+    height: 72,
     resizeMode: "contain",
   },
   listTitle: {
