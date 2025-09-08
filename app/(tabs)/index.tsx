@@ -15,7 +15,7 @@ import { Livro } from "../../interfaces/Livro";
 import { SafeAreaView } from "react-native-safe-area-context";
 import UnifiedBookModal from "../../components/MyComponents/CustomModalBook/UnifiedBookModal";
 import CustomPhoto from "../../components/MyComponents/CustomPhoto/CustomPhoto";
-import FiveStarReview from "../../components/MyComponents/FiveStarComponent/FiveStarComponent";
+import CustomRating from "../../components/MyComponents/CustomRating/CustomRating";
 import CustomButton from "@/components/MyComponents/CustomButton.tsx/CustomButton";
 import { CheckBox } from "react-native-elements";
 import { Ionicons } from '@expo/vector-icons'; // Importando o ícone
@@ -72,14 +72,11 @@ export default function TabOneScreen() {
 
   const handleSaveRating = (newRating: number) => {
     if (selectedBook) {
-      console.log(`💾 SALVANDO AVALIAÇÃO:`);
-      console.log(`   📖 Livro: "${selectedBook.title}"`);
-      console.log(`   ⭐ Avaliação anterior: ${selectedBook.Review || 0}/5`);
-      console.log(`   ⭐ Nova avaliação: ${newRating}/5`);
-      
       updateLivroReview(selectedBook.id, newRating);
+      // Atualizar o selectedBook localmente para refletir a mudança imediatamente
+      setSelectedBook({ ...selectedBook, Review: newRating });
     }
-    closeModal();
+    // Não fechar o modal aqui - deixar o modal controlar o fechamento
   };
 
   const handleAddBook = (newBook: any) => {
@@ -88,11 +85,6 @@ export default function TabOneScreen() {
   };
 
   const renderBookItem = ({ item, index }: { item: Livro; index: number }) => {
-    console.log(`🎨 RENDERIZANDO LIVRO ${index + 1}: "${item.title}"`);
-    console.log(`   🖼️ Imagem: ${item.imageLinks?.thumbnail || item.imageLinks?.smallThumbnail || 'placeholder'}`);
-    console.log(`   ⭐ Avaliação: ${item.Review ?? 0}/5`);
-    console.log(`   🏆 Posição no ranking: ${showBest ? index + 1 : 'N/A'}`);
-    
     return (
       <TouchableOpacity onPress={() => handleBookPress(item)}>
         <View style={{ marginHorizontal: 5, alignItems: "center" }}>
@@ -109,7 +101,13 @@ export default function TabOneScreen() {
             }
             type={3}
           />
-          <FiveStarReview rating={item.Review ?? 0} />
+          <CustomRating 
+            value={item.Review ?? 0} 
+            onRatingChange={() => {}} 
+            size={20}
+            color="#FFD700"
+            emptyColor="#CCCCCC"
+          />
         </View>
       </TouchableOpacity>
     );

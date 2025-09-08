@@ -377,6 +377,107 @@ const createStyles = (theme: Theme) => StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
     },
+
+    // Read Confirmation Overlay
+    readConfirmationOverlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1000,
+    },
+    readConfirmationContent: {
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 30,
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 8,
+        maxWidth: '90%',
+    },
+    readConfirmationTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginTop: 15,
+        marginBottom: 10,
+        textAlign: 'center',
+    },
+    readConfirmationSubtitle: {
+        fontSize: 14,
+        marginBottom: 25,
+        textAlign: 'center',
+        lineHeight: 20,
+    },
+    readConfirmationButtons: {
+        flexDirection: 'row',
+        gap: 12,
+        width: '100%',
+    },
+    readConfirmationButton: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 15,
+        paddingHorizontal: 20,
+        borderRadius: 15,
+        gap: 8,
+    },
+    cancelReadButton: {
+        borderWidth: 1,
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+    },
+    confirmReadButton: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    readConfirmationButtonText: {
+        fontSize: 16,
+        fontWeight: '600',
+    },
+
+    // Save Confirmation Overlay
+    saveConfirmationOverlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1000,
+    },
+    saveConfirmationContent: {
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 30,
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 8,
+    },
+    saveConfirmationText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#333',
+        marginTop: 15,
+        textAlign: 'center',
+    },
 });
 
 const UnifiedBookModal: React.FC<UnifiedBookModalProps> = ({
@@ -391,6 +492,7 @@ const UnifiedBookModal: React.FC<UnifiedBookModalProps> = ({
     removeFromRecommended = false,
 }) => {
     const {
+        livrosLidos,
         addLivroLido,
         addLivroBiblioteca,
         removeLivroBiblioteca,
@@ -406,6 +508,9 @@ const UnifiedBookModal: React.FC<UnifiedBookModalProps> = ({
     // Estados para diferentes tipos de modal
     const [isExpanded, setIsExpanded] = useState(false);
     const [rating, setRating] = useState(currentRating);
+    const [showSaveAnimation, setShowSaveAnimation] = useState(false);
+    const [showReadConfirmation, setShowReadConfirmation] = useState(false);
+    const [hasReadBook, setHasReadBook] = useState(false);
 
     // Função para atualizar rating com incrementos de 0.5
     const updateRating = (newRating: number) => {
@@ -429,6 +534,7 @@ const UnifiedBookModal: React.FC<UnifiedBookModalProps> = ({
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const slideAnim = useRef(new Animated.Value(50)).current;
     const scaleAnim = useRef(new Animated.Value(0.9)).current;
+    const saveAnim = useRef(new Animated.Value(0)).current;
 
     // Reset states when modal opens/closes
     React.useEffect(() => {
@@ -516,13 +622,79 @@ const UnifiedBookModal: React.FC<UnifiedBookModalProps> = ({
         setIsExpanded(!isExpanded);
     };
 
-    // Função para salvar avaliação
+    // Função para verificar se pode avaliar
     const handleSaveRating = () => {
-        if (onSaveRating) {
-            console.log(`⭐ SALVANDO AVALIAÇÃO: ${rating} estrelas para "${book?.title}"`);
-            onSaveRating(rating);
+        // Verificar se o livro está na lista de lidos
+        const isBookInReadList = livrosLidos.some(livro => livro.id === book?.id);
+        
+        if (!isBookInReadList) {
+            // Se não está na lista de lidos, mostrar confirmação
+            setShowReadConfirmation(true);
+        } else {
+            // Se já está na lista, salvar avaliação diretamente
+            saveRating();
         }
-        onClose();
+    };
+
+    // Função para salvar avaliação
+    const saveRating = () => {
+        if (onSaveRating) {
+            onSaveRating(rating);
+            
+            // Mostrar animação de confirmação
+            setShowSaveAnimation(true);
+            saveAnim.setValue(0);
+            
+            Animated.sequence([
+                Animated.timing(saveAnim, {
+                    toValue: 1,
+                    duration: 300,
+                    useNativeDriver: true,
+                }),
+                Animated.delay(1000),
+                Animated.timing(saveAnim, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: true,
+                }),
+            ]).start(() => {
+                setShowSaveAnimation(false);
+            });
+        }
+    };
+
+    // Função para confirmar que leu o livro
+    const handleConfirmRead = () => {
+        if (book) {
+            // Adicionar à lista de lidos com a avaliação
+            addLivroLido({ ...book, Review: rating });
+            setShowReadConfirmation(false);
+            
+            // Mostrar animação de confirmação diretamente
+            setShowSaveAnimation(true);
+            saveAnim.setValue(0);
+            
+            Animated.sequence([
+                Animated.timing(saveAnim, {
+                    toValue: 1,
+                    duration: 300,
+                    useNativeDriver: true,
+                }),
+                Animated.delay(1000),
+                Animated.timing(saveAnim, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: true,
+                }),
+            ]).start(() => {
+                setShowSaveAnimation(false);
+            });
+        }
+    };
+
+    // Função para cancelar confirmação
+    const handleCancelRead = () => {
+        setShowReadConfirmation(false);
     };
 
     // Função para salvar livro adicionado
@@ -958,7 +1130,7 @@ const UnifiedBookModal: React.FC<UnifiedBookModalProps> = ({
                                         emptyColor='#CCCCCC'
                                     />
                                     <CustomButton
-                                        onPress={() => console.log('Avaliar')}
+                                        onPress={handleSaveRating}
                                         placeholder="Avaliar"
                                         styleType={1}
                                         size="xs"
@@ -1046,6 +1218,75 @@ const UnifiedBookModal: React.FC<UnifiedBookModalProps> = ({
                         <View style={{ marginBottom: 500 }}></View>
                     </ScrollView>
                 </ImageBackground>
+                
+                {/* Overlay de confirmação de leitura */}
+                {showReadConfirmation && (
+                    <View style={styles.readConfirmationOverlay}>
+                        <View style={styles.readConfirmationContent}>
+                            <Ionicons 
+                                name="book" 
+                                size={50} 
+                                color={theme.details} 
+                            />
+                            <Text style={[styles.readConfirmationTitle, { color: theme.text }]}>
+                                Você já leu este livro?
+                            </Text>
+                            <Text style={[styles.readConfirmationSubtitle, { color: theme.textSecondary }]}>
+                                Para avaliar, o livro precisa estar na sua lista de lidos.
+                            </Text>
+                            
+                            <View style={styles.readConfirmationButtons}>
+                                <TouchableOpacity
+                                    style={[styles.readConfirmationButton, styles.cancelReadButton, { backgroundColor: theme.modalBackgroundSecondary }]}
+                                    onPress={handleCancelRead}
+                                >
+                                    <Text style={[styles.readConfirmationButtonText, { color: theme.text }]}>
+                                        Não li ainda
+                                    </Text>
+                                </TouchableOpacity>
+                                
+                                <TouchableOpacity
+                                    style={[styles.readConfirmationButton, styles.confirmReadButton, { backgroundColor: theme.details }]}
+                                    onPress={handleConfirmRead}
+                                >
+                                    <Ionicons name="checkmark" size={20} color={theme.textButtons} />
+                                    <Text style={[styles.readConfirmationButtonText, { color: theme.textButtons }]}>
+                                        Sim, já li
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                )}
+
+                {/* Overlay de confirmação de salvamento */}
+                {showSaveAnimation && (
+                    <Animated.View
+                        style={[
+                            styles.saveConfirmationOverlay,
+                            {
+                                opacity: saveAnim,
+                                transform: [{
+                                    scale: saveAnim.interpolate({
+                                        inputRange: [0, 1],
+                                        outputRange: [0.8, 1],
+                                    }),
+                                }],
+                            },
+                        ]}
+                    >
+                        <View style={styles.saveConfirmationContent}>
+                            <Ionicons 
+                                name="checkmark-circle" 
+                                size={60} 
+                                color="#4CAF50" 
+                            />
+                            <Text style={styles.saveConfirmationText}>
+                                Avaliação salva!
+                            </Text>
+                        </View>
+                    </Animated.View>
+                )}
             </View>
         </Modal>
     );

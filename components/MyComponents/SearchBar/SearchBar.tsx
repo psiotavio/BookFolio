@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
     position: "absolute",
     paddingHorizontal: 10,
-    width: "86%",
+    width: "95%",
     top: 60,
   },
   searchInput: {
