@@ -13,7 +13,7 @@ import { Livro } from "../../interfaces/Livro";
 import { SafeAreaView } from "react-native-safe-area-context";
 import UnifiedBookModal from "../../components/MyComponents/CustomModalBook/UnifiedBookModal";
 import CustomPhoto from "../../components/MyComponents/CustomPhoto/CustomPhoto";
-import FiveStarReview from "../../components/MyComponents/FiveStarComponent/FiveStarComponent";
+import CustomRating from "../../components/MyComponents/CustomRating/CustomRating";
 import { useDictionary } from "@/contexts/DictionaryContext";
 import EmptyState from "../../components/MyComponents/EmptyState/EmptyState";
 import { useNavigationContext } from "../../contexts/NavigationContext";
@@ -74,11 +74,19 @@ export default function Library() {
           />
         </View>
 
-        <View>
+        <View style={styles.bookInfoContainer}>
           <Text style={[styles.bookTitle, { color: theme.text }]}>
             {item.title}
           </Text>
-          <FiveStarReview type={2} rating={item.Review ?? 0} />
+          <View style={styles.ratingContainer}>
+            <CustomRating
+              value={item.Review ?? 0}
+              onRatingChange={() => {}}
+              size={20}
+              color="#FFD700"
+              emptyColor="#CCCCCC"
+            />
+          </View>
         </View>
       </View>
     </TouchableOpacity>
@@ -297,10 +305,9 @@ const styles = StyleSheet.create({
   bookTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 5,
     textAlign: "left",
     flexWrap: "wrap",
-    width: "55%",
+    lineHeight: 22,
   },
   bookCover: {
     width: 125,
@@ -352,13 +359,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     flexDirection: "row",
-    gap: 10,
+    gap: 15,
+    paddingHorizontal: 10,
   },
   photoAndNumber: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "flex-start",
+    gap: 12,
+    minWidth: 80,
+  },
+  bookInfoContainer: {
+    flex: 1,
     justifyContent: "center",
-    gap: 10,
-    paddingLeft: 10,
+    paddingLeft: 5,
+  },
+  ratingContainer: {
+    marginTop: 8,
+    alignItems: "flex-start",
   },
 });
