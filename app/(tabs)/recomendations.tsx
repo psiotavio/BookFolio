@@ -12,7 +12,7 @@ import { useTheme } from "../../constants/temas/ThemeContext";
 import { useUser } from "../../contexts/UserContext";
 import { Livro } from "../../interfaces/Livro";
 import { SafeAreaView } from "react-native-safe-area-context";
-import CustomModalBook from "../../components/MyComponents/CustomModalBook/CustomModalBook";
+import UnifiedBookModal from "../../components/MyComponents/CustomModalBook/UnifiedBookModal";
 import CustomPhoto from "../../components/MyComponents/CustomPhoto/CustomPhoto";
 import { useDictionary } from "@/contexts/DictionaryContext"; // Adicionando o hook de tradução
 import { fetchBookRecommendationsByAuthor } from "@/services/BookService";
@@ -53,6 +53,7 @@ export default function Recomendations() {
   }, [language, livrosLidos]); // A linguagem e os livros lidos afetam a busca
 
   const handleBookPress = (book: Livro) => {
+    console.log(`📖 LIVRO SELECIONADO: "${book.title}"`);
     setSelectedBook(book);
     setIsModalVisible(true);
   };
@@ -132,10 +133,11 @@ export default function Recomendations() {
         </View>
       </View>
       {selectedBook && (
-        <CustomModalBook
+        <UnifiedBookModal
           isVisible={isModalVisible}
           book={selectedBook}
           onClose={closeModal}
+          modalType="view"
           removeFromRecommended={true}
         />
       )}

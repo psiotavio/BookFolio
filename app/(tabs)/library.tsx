@@ -11,10 +11,9 @@ import { useTheme } from "../../constants/temas/ThemeContext";
 import { useUser } from "../../contexts/UserContext";
 import { Livro } from "../../interfaces/Livro";
 import { SafeAreaView } from "react-native-safe-area-context";
-import CustomModalBook from "../../components/MyComponents/CustomModalBook/CustomModalBook";
+import UnifiedBookModal from "../../components/MyComponents/CustomModalBook/UnifiedBookModal";
 import CustomPhoto from "../../components/MyComponents/CustomPhoto/CustomPhoto";
 import FiveStarReview from "../../components/MyComponents/FiveStarComponent/FiveStarComponent";
-import CustomModalBookLido from "@/components/MyComponents/CustomModalBook/CustomModalBookLido";
 import { useDictionary } from "@/contexts/DictionaryContext";
 
 export default function Library() {
@@ -29,6 +28,7 @@ export default function Library() {
   ); // Estado para alternar entre "Lidos" e "Ler mais tarde"
 
   const handleBookPress = (book: Livro) => {
+    console.log(`📖 LIVRO SELECIONADO: "${book.title}"`);
     setSelectedBook(book);
     setIsModalVisible(true);
   };
@@ -184,22 +184,23 @@ export default function Library() {
         )}
       </View>
       {selectedBook && !showBest &&(
-        <CustomModalBook
+        <UnifiedBookModal
           isVisible={isModalVisible}
           book={selectedBook}
           onClose={closeModal}
-          AddToLibrary={false}
+          modalType="view"
           removeFromLibrary={true}
         />
       )}
 
       {selectedBook && showBest && (
-        <CustomModalBookLido
+        <UnifiedBookModal
           isVisible={isModalVisible}
           book={selectedBook}
           onClose={closeModal}
+          modalType="read"
           currentRating={selectedBook.Review!}
-          onSave={handleSaveRating}
+          onSaveRating={handleSaveRating}
         />
       )}
     </SafeAreaView>

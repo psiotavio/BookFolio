@@ -94,6 +94,16 @@ export interface Translations {
   home: string;
   recomendations: string;
   library: string;
+
+  // Novas traduções para o modal de livros
+  'author.unknown': string;
+  'book.readers': string;
+  'book.pages': string;
+  'book.rating': string;
+  'book.synopsis': string;
+  'book.noSynopsisAvailable': string;
+  'book.read': string;
+  'book.readLater': string;
 }
 
 const translations: TranslationsDictionary = {
@@ -183,6 +193,16 @@ const translations: TranslationsDictionary = {
     home: "Home",
     recomendations: "Recomendações",
     library: "Biblioteca",
+
+    // Novas traduções para o modal de livros
+    'author.unknown': "Autor Desconhecido",
+    'book.readers': "Leitores",
+    'book.pages': "Páginas",
+    'book.rating': "Avaliação",
+    'book.synopsis': "Sinopse",
+    'book.noSynopsisAvailable': "Nenhuma sinopse disponível",
+    'book.read': "Lido",
+    'book.readLater': "Ler mais tarde",
   },
   es: {
     melhores: "Mejores",
@@ -270,6 +290,16 @@ const translations: TranslationsDictionary = {
     home: "Inicio",
     recomendations: "Recomendaciones",
     library: "Biblioteca",
+
+    // Novas traduções para o modal de livros
+    'author.unknown': "Autor Desconocido",
+    'book.readers': "Lectores",
+    'book.pages': "Páginas",
+    'book.rating': "Calificación",
+    'book.synopsis': "Sinopsis",
+    'book.noSynopsisAvailable': "Ninguna sinopsis disponible",
+    'book.read': "Leído",
+    'book.readLater': "Leer más tarde",
   },
   fr: {
     melhores: "Meilleurs",
@@ -357,6 +387,16 @@ const translations: TranslationsDictionary = {
     home: "Accueil",
     recomendations: "Recommandations",
     library: "Bibliothèque",
+
+    // Novas traduções para o modal de livros
+    'author.unknown': "Auteur Inconnu",
+    'book.readers': "Lecteurs",
+    'book.pages': "Pages",
+    'book.rating': "Évaluation",
+    'book.synopsis': "Synopsis",
+    'book.noSynopsisAvailable': "Aucun synopsis disponible",
+    'book.read': "Lu",
+    'book.readLater': "Lire plus tard",
   },
   en: {
     melhores: "Best",
@@ -444,6 +484,16 @@ const translations: TranslationsDictionary = {
     home: "Home",
     recomendations: "Recommendations",
     library: "Library",
+
+    // Novas traduções para o modal de livros
+    'author.unknown': "Unknown Author",
+    'book.readers': "Readers",
+    'book.pages': "Pages",
+    'book.rating': "Rating",
+    'book.synopsis': "Synopsis",
+    'book.noSynopsisAvailable': "No synopsis available",
+    'book.read': "Read",
+    'book.readLater': "Read Later",
   },
 };
 

@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { fetchBookDetails } from "../../../services/BookService"; // Sua função de busca de livros
 import { Livro } from "../../../interfaces/Livro"; // Importando o tipo Livro
-import CustomModalBook from "../CustomModalBook/CustomModalBook";
+import UnifiedBookModal from "../CustomModalBook/UnifiedBookModal";
 import { useTheme } from "../../../constants/temas/ThemeContext";
 import { useDictionary } from "@/contexts/DictionaryContext"; // Importando o hook de tradução
 
@@ -27,6 +27,7 @@ const SearchBar = () => {
 
   useEffect(() => {
     if (query.length > 2) {
+      console.log(`🔍 INICIANDO BUSCA: "${query}" (${query.length} caracteres)`);
       const delayDebounce = setTimeout(() => {
         // Se o idioma for 'pt-BR', altere para 'pt' para garantir compatibilidade
         const searchLanguage = language === "pt-BR" ? "pt" : language;
@@ -34,18 +35,21 @@ const SearchBar = () => {
         fetchBookDetails(query, searchLanguage)
           .then((fetchedBooks: Livro[]) => {
             if (fetchedBooks.length === 0) {
-              console.log("No books found in the specified language.");
+              console.log("❌ Nenhum livro encontrado na linguagem especificada.");
+            } else {
+              console.log(`✅ ${fetchedBooks.length} livros encontrados para "${query}"`);
             }
             setBooks(fetchedBooks);
           })
           .catch((error) => {
-            console.error("Error fetching books:", error);
+            console.error("❌ Erro ao buscar livros:", error);
             setBooks([]);
           });
       }, 500);
   
       return () => clearTimeout(delayDebounce);
     } else {
+      console.log(`🔍 BUSCA CANCELADA: Query muito curta (${query.length} caracteres)`);
       setBooks([]);
     }
   }, [query, language]);
@@ -53,21 +57,25 @@ const SearchBar = () => {
 
   const handleOutsidePress = () => {
     if (isKeyboardDismissed) {
+      console.log(`🔍 SEGUNDO CLIQUE: Fechando resultados da busca`);
       setBooks([]);
       setIsKeyboardDismissed(false);
     } else {
+      console.log(`⌨️ PRIMEIRO CLIQUE: Dispensando teclado`);
       Keyboard.dismiss();
       setIsKeyboardDismissed(true);
     }
   };
 
   const handleBookPress = (book: Livro) => {
+    console.log(`📖 LIVRO SELECIONADO: "${book.title}"`);
     setSelectedBook(book);
     setBooks([]);
     setIsModalVisible(true);
   };
 
   const closeModal = () => {
+    console.log(`❌ MODAL FECHADO`);
     setIsModalVisible(false);
     setSelectedBook(null);
     setBooks([]);
@@ -82,7 +90,10 @@ const SearchBar = () => {
           placeholderTextColor={theme.text}
           value={query}
           onChangeText={setQuery}
-          onFocus={() => setIsKeyboardDismissed(false)}
+          onFocus={() => {
+            console.log(`⌨️ INPUT EM FOCO: Teclado ativado`);
+            setIsKeyboardDismissed(false);
+          }}
         />
         {books.length > 0 && (
           <FlatList
@@ -106,11 +117,11 @@ const SearchBar = () => {
           />
         )}
 
-        <CustomModalBook
+        <UnifiedBookModal
           isVisible={isModalVisible}
           book={selectedBook}
           onClose={closeModal}
-          AddToLibrary={false}
+          modalType="view"
         />
       </View>
     </TouchableWithoutFeedback>
