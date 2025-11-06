@@ -10,11 +10,21 @@ import { Livro } from "../interfaces/Livro";
 import { fetchBookRecommendations } from "../services/BookService"; // Importe corretamente
 import { useDictionary } from "./DictionaryContext";
 
+interface UserProfile {
+  profileImage: any;
+  bannerImage: any;
+  name: string;
+  bio: string;
+  tags: string[];
+  joinDate: string;
+}
+
 interface UserContextType {
   livrosLidos: Livro[];
   biblioteca: Livro[];
   livrosLendo: Livro[];
   livrosRecomendados: Livro[];
+  userProfile: UserProfile;
   addLivroLido: (livro: Livro) => void;
   addLivroBiblioteca: (livro: Livro) => void;
   addLivroLendo: (livro: Livro) => void;
@@ -23,6 +33,7 @@ interface UserContextType {
   removeLivroLendo: (id: string) => void;
   removeLivroRecomendados:(id: string) => void;
   updateLivroReview: (id: string, newReview: number) => void;
+  updateUserProfile: (profile: Partial<UserProfile>) => void;
   clearAll: () => void;
   recommendBooks: (livro: Livro, language: string) => void;
 }
@@ -36,17 +47,26 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
   const [livrosLidos, setLivrosLidos] = useState<Livro[]>([]);
   const [biblioteca, setBiblioteca] = useState<Livro[]>([]);
   const [livrosLendo, setLivrosLendo] = useState<Livro[]>([]);
+  const [userProfile, setUserProfile] = useState<UserProfile>({
+    profileImage: null,
+    bannerImage: null,
+    name: "Leitor Avid",
+    bio: "Apaixonado por livros e histórias",
+    tags: ["Ficção", "Fantasia", "Romance"],
+    joinDate: "Janeiro 2024"
+  });
   const { language } = useDictionary(); // Obtendo o idioma atual do app
 
   useEffect(() => {
     
     const loadStorageData = async () => {
       try {
-        const [storedLivrosLidos, storedBiblioteca, storedLivrosLendo, storedLivrosRecomendados] = await Promise.all([
+        const [storedLivrosLidos, storedBiblioteca, storedLivrosLendo, storedLivrosRecomendados, storedUserProfile] = await Promise.all([
           AsyncStorage.getItem("livrosLidos"),
           AsyncStorage.getItem("biblioteca"),
           AsyncStorage.getItem("livrosLendo"),
-          AsyncStorage.getItem("livrosRecomendados")
+          AsyncStorage.getItem("livrosRecomendados"),
+          AsyncStorage.getItem("userProfile")
         ]);
 
         if (storedLivrosLidos) {
@@ -65,6 +85,10 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
         if (storedLivrosRecomendados) {
           const parsedLivrosRecomendados = JSON.parse(storedLivrosRecomendados);
           setLivrosRecomendados(parsedLivrosRecomendados);
+        }
+        if (storedUserProfile) {
+          const parsedUserProfile = JSON.parse(storedUserProfile);
+          setUserProfile(parsedUserProfile);
         }
       } catch (error) {
         console.error("Erro ao carregar dados do armazenamento:", error);
@@ -122,6 +146,18 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
     saveLivrosRecomendados();
   }, [livrosRecomendados]);
 
+  useEffect(() => {
+    const saveUserProfile = async () => {
+      try {
+        await AsyncStorage.setItem("userProfile", JSON.stringify(userProfile));
+      } catch (error) {
+        console.error("Erro ao salvar perfil do usuário:", error);
+      }
+    };
+
+    saveUserProfile();
+  }, [userProfile]);
+
   const addLivroLido = async (livro: Livro) => {
     if (!livrosLidos.some((l) => l.id === livro.id)) {
       const livroComData = { ...livro, LidoQuando: new Date(), Review: 0 };
@@ -173,15 +209,28 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
     );
   };
 
+  const updateUserProfile = (profile: Partial<UserProfile>) => {
+    setUserProfile((prevProfile) => ({ ...prevProfile, ...profile }));
+  };
+
   const clearAll = async () => {
     setLivrosLidos([]);
     setBiblioteca([]);
     setLivrosLendo([]);
     setLivrosRecomendados([]);
+    setUserProfile({
+      profileImage: null,
+      bannerImage: null,
+      name: "Leitor Avid",
+      bio: "Apaixonado por livros e histórias",
+      tags: ["Ficção", "Fantasia", "Romance"],
+      joinDate: "Janeiro 2024"
+    });
     await AsyncStorage.removeItem('livrosLidos');
     await AsyncStorage.removeItem('biblioteca');
     await AsyncStorage.removeItem('livrosLendo');
     await AsyncStorage.removeItem('livrosRecomendados');
+    await AsyncStorage.removeItem('userProfile');
   };
 
   const recommendBooks = async (livro: Livro, language: string) => {
@@ -208,6 +257,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
         biblioteca,
         livrosLendo,
         livrosRecomendados,
+        userProfile,
         addLivroLido,
         addLivroBiblioteca,
         addLivroLendo,
@@ -216,6 +266,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
         removeLivroLendo,
         removeLivroRecomendados,
         updateLivroReview,
+        updateUserProfile,
         clearAll,
         recommendBooks,
       }}

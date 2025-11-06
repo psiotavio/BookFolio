@@ -14,14 +14,23 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.psiotavio.Readfolio"
+      "bundleIdentifier": "com.psiotavio.Readfolio",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "O app precisa acessar suas fotos para permitir que você escolha imagens de perfil e banner.",
+        "NSCameraUsageDescription": "O app precisa acessar a câmera para permitir que você tire fotos para seu perfil."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#1A1316"
       },
-      "package": "com.psiotavio.Readfolio"
+      "package": "com.psiotavio.Readfolio",
+      "permissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.CAMERA"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -29,7 +38,14 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "O app precisa acessar suas fotos para permitir que você escolha imagens de perfil e banner.",
+          "cameraPermission": "O app precisa acessar a câmera para permitir que você tire fotos para seu perfil."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

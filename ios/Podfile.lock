@@ -8,7 +8,7 @@ PODS:
   - EXImageLoader (4.7.0):
     - ExpoModulesCore
     - React-Core
-  - Expo (51.0.32):
+  - Expo (51.0.39):
     - ExpoModulesCore
   - ExpoAsset (10.0.10):
     - ExpoModulesCore
@@ -16,15 +16,15 @@ PODS:
     - ExpoModulesCore
   - ExpoFont (12.0.10):
     - ExpoModulesCore
-  - ExpoHead (3.5.23):
+  - ExpoHead (3.5.24):
     - ExpoModulesCore
-  - ExpoImagePicker (15.0.7):
+  - ExpoImagePicker (15.1.0):
     - ExpoModulesCore
   - ExpoKeepAwake (13.0.2):
     - ExpoModulesCore
   - ExpoLinearGradient (13.0.2):
     - ExpoModulesCore
-  - ExpoModulesCore (1.12.24):
+  - ExpoModulesCore (1.12.26):
     - DoubleConversion
     - glog
     - RCT-Folly (= 2024.01.01.00)
@@ -51,7 +51,7 @@ PODS:
     - ExpoModulesCore
   - ExpoWebBrowser (13.0.3):
     - ExpoModulesCore
-  - EXSplashScreen (0.27.5):
+  - EXSplashScreen (0.27.7):
     - DoubleConversion
     - ExpoModulesCore
     - glog
@@ -981,9 +981,9 @@ PODS:
     - React-debug
   - react-native-get-random-values (1.11.0):
     - React-Core
-  - react-native-safe-area-context (4.11.0):
+  - react-native-safe-area-context (4.10.5):
     - React-Core
-  - react-native-slider (4.5.3):
+  - react-native-slider (4.5.2):
     - DoubleConversion
     - glog
     - RCT-Folly (= 2024.01.01.00)
@@ -1216,8 +1216,29 @@ PODS:
     - React-logger (= 0.74.5)
     - React-perflogger (= 0.74.5)
     - React-utils (= 0.74.5)
-  - RNCAsyncStorage (1.24.0):
+  - RNCAsyncStorage (1.23.1):
     - React-Core
+  - RNGestureHandler (2.16.2):
+    - DoubleConversion
+    - glog
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - RNReanimated (3.10.1):
     - DoubleConversion
     - glog
@@ -1268,20 +1289,20 @@ DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
-  - "EXConstants (from `../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-constants/ios`)"
-  - "EXImageLoader (from `../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-image-loader/ios`)"
-  - "Expo (from `../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo`)"
-  - "ExpoAsset (from `../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-asset/ios`)"
-  - "ExpoFileSystem (from `../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-file-system/ios`)"
-  - "ExpoFont (from `../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-font/ios`)"
-  - "ExpoHead (from `../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-router/ios`)"
-  - "ExpoImagePicker (from `../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-image-picker/ios`)"
-  - "ExpoKeepAwake (from `../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-keep-awake/ios`)"
-  - "ExpoLinearGradient (from `../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-linear-gradient/ios`)"
-  - "ExpoModulesCore (from `../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-modules-core`)"
-  - "ExpoSystemUI (from `../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-system-ui/ios`)"
-  - "ExpoWebBrowser (from `../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-web-browser/ios`)"
-  - "EXSplashScreen (from `../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-splash-screen/ios`)"
+  - EXConstants (from `../node_modules/expo-constants/ios`)
+  - EXImageLoader (from `../node_modules/expo-image-loader/ios`)
+  - Expo (from `../node_modules/expo`)
+  - ExpoAsset (from `../node_modules/expo-asset/ios`)
+  - ExpoFileSystem (from `../node_modules/expo-file-system/ios`)
+  - ExpoFont (from `../node_modules/expo-font/ios`)
+  - ExpoHead (from `../node_modules/expo-router/ios`)
+  - ExpoImagePicker (from `../node_modules/expo-image-picker/ios`)
+  - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
+  - ExpoLinearGradient (from `../node_modules/expo-linear-gradient/ios`)
+  - ExpoModulesCore (from `../node_modules/expo-modules-core`)
+  - ExpoSystemUI (from `../node_modules/expo-system-ui/ios`)
+  - ExpoWebBrowser (from `../node_modules/expo-web-browser/ios`)
+  - EXSplashScreen (from `../node_modules/expo-splash-screen/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
@@ -1337,6 +1358,7 @@ DEPENDENCIES:
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
+  - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -1353,33 +1375,33 @@ EXTERNAL SOURCES:
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   EXConstants:
-    :path: "../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-constants/ios"
+    :path: "../node_modules/expo-constants/ios"
   EXImageLoader:
-    :path: "../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-image-loader/ios"
+    :path: "../node_modules/expo-image-loader/ios"
   Expo:
-    :path: "../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo"
+    :path: "../node_modules/expo"
   ExpoAsset:
-    :path: "../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-asset/ios"
+    :path: "../node_modules/expo-asset/ios"
   ExpoFileSystem:
-    :path: "../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-file-system/ios"
+    :path: "../node_modules/expo-file-system/ios"
   ExpoFont:
-    :path: "../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-font/ios"
+    :path: "../node_modules/expo-font/ios"
   ExpoHead:
-    :path: "../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-router/ios"
+    :path: "../node_modules/expo-router/ios"
   ExpoImagePicker:
-    :path: "../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-image-picker/ios"
+    :path: "../node_modules/expo-image-picker/ios"
   ExpoKeepAwake:
-    :path: "../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-keep-awake/ios"
+    :path: "../node_modules/expo-keep-awake/ios"
   ExpoLinearGradient:
-    :path: "../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-linear-gradient/ios"
+    :path: "../node_modules/expo-linear-gradient/ios"
   ExpoModulesCore:
-    :path: "../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-modules-core"
+    :path: "../node_modules/expo-modules-core"
   ExpoSystemUI:
-    :path: "../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-system-ui/ios"
+    :path: "../node_modules/expo-system-ui/ios"
   ExpoWebBrowser:
-    :path: "../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-web-browser/ios"
+    :path: "../node_modules/expo-web-browser/ios"
   EXSplashScreen:
-    :path: "../../../../../Programação /MEUS PROJETOS/BookFolio/BookFolio/node_modules/expo-splash-screen/ios"
+    :path: "../node_modules/expo-splash-screen/ios"
   FBLazyVector:
     :path: "../node_modules/react-native/Libraries/FBLazyVector"
   fmt:
@@ -1486,6 +1508,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
+  RNGestureHandler:
+    :path: "../node_modules/react-native-gesture-handler"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -1499,18 +1523,18 @@ SPEC CHECKSUMS:
   DoubleConversion: 76ab83afb40bddeeee456813d9c04f67f78771b5
   EXConstants: 409690fbfd5afea964e5e9d6c4eb2c2b59222c59
   EXImageLoader: ab589d67d6c5f2c33572afea9917304418566334
-  Expo: 33132a667698a3259a4e6c0af1b4936388e5fa33
+  Expo: 8c995afb875c15bf8439af0b20bcb9ed8f90d0bd
   ExpoAsset: 323700f291684f110fb55f0d4022a3362ea9f875
   ExpoFileSystem: 80bfe850b1f9922c16905822ecbf97acd711dc51
   ExpoFont: 00756e6c796d8f7ee8d211e29c8b619e75cbf238
-  ExpoHead: fcb28a68ed4ba28f177394d2dfb8a0a8824cd103
-  ExpoImagePicker: 12a420923383ae38dccb069847218f27a3b87816
+  ExpoHead: a79e263b73039b41940c220dd67b83572e7cac09
+  ExpoImagePicker: 1e696c26a3e5c01a0ab1b99897db3da59c04a141
   ExpoKeepAwake: 3b8815d9dd1d419ee474df004021c69fdd316d08
   ExpoLinearGradient: 8cec4a09426d8934c433e83cb36262d72c667fce
-  ExpoModulesCore: 9dce0f6e9703e0173043e0928cec54060618f815
+  ExpoModulesCore: 1c82be0190e628998383a1e0ca5bdc3b22692f6a
   ExpoSystemUI: d4f065a016cae6721b324eb659cdee4d4cf0cb26
   ExpoWebBrowser: 7595ccac6938eb65b076385fd23d035db9ecdc8e
-  EXSplashScreen: 1214f27b64e691160687922f8cb862c6477be9e1
+  EXSplashScreen: 1e5a521ed4d312e9688013fdcd2fb72679d673f9
   FBLazyVector: ac12dc084d1c8ec4cc4d7b3cf1b0ebda6dab85af
   fmt: 4c2741a687cc09f0634a2e2c72a838b99f1ff120
   glog: fdfdfe5479092de0c4bdbebedd9056951f092c4f
@@ -1539,8 +1563,8 @@ SPEC CHECKSUMS:
   React-logger: 257858bd55f3a4e1bc0cf07ddc8fb9faba6f8c7c
   React-Mapbuffer: 6c1cacdbf40b531f549eba249e531a7d0bfd8e7f
   react-native-get-random-values: 21325b2244dfa6b58878f51f9aa42821e7ba3d06
-  react-native-safe-area-context: 851c62c48dce80ccaa5637b6aa5991a1bc36eca9
-  react-native-slider: e7bb458bd4675ded72d97544deee0932d90d4a25
+  react-native-safe-area-context: a240ad4b683349e48b1d51fed1611138d1bdad97
+  react-native-slider: 4c9c8d0c5dd856e6ff298a448f62fa9fd372d36f
   React-nativeconfig: ba9a2e54e2f0882cf7882698825052793ed4c851
   React-NativeModulesApple: 374d2a7da3657bd284ffa024449ae01c804ca8da
   React-perflogger: ed4e0c65781521e0424f2e5e40b40cc7879d737e
@@ -1563,12 +1587,13 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 057a40b536cab47481d2a2b4f5e93d7eb0b285de
   React-utils: b4b4a8bdd58632a9ec314071fbd4a642d984718e
   ReactCommon: bfd464c8f774a0acb93cf2a45afa80b763431f1b
-  RNCAsyncStorage: ec53e44dc3e75b44aa2a9f37618a49c3bc080a7a
-  RNReanimated: 5e1eaf42e102fa5b608ce0039edb03687385f606
+  RNCAsyncStorage: 826b603ae9c0f88b5ac4e956801f755109fa4d5c
+  RNGestureHandler: 9508b860b3709d658dda7a701363a318e329d04b
+  RNReanimated: d6284e5ba8c4481cca1b2e1e60a9b8a58417869b
   RNScreens: 4e9248a76e35421013de772f5fefa73d7b039d05
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
   Yoga: 950bbfd7e6f04790fdb51149ed51df41f329fcc8
 
 PODFILE CHECKSUM: 9fe802105936f9458970fd6942e133c7a1932a1e
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

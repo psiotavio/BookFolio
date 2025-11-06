@@ -72,6 +72,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         paddingStart: 24,
+        marginTop: 32,
         paddingEnd: 24,
     },
     bookContentContainer: {
@@ -1052,7 +1053,7 @@ const UnifiedBookModal: React.FC<UnifiedBookModalProps> = ({
         >
             <View style={{ flex: 1 }}>
                 <ImageBackground
-                    source={{ uri: getBestGoogleCoverBookImage(book?.imageLinks) || undefined }}
+                    source={{ uri: (getBestGoogleCoverBookImage(book?.imageLinks) || '').replace(/^http:/, 'https:') || undefined }}
                     style={styles.backgroundImage}
                 >
                     <View style={styles.backgroundOverlay} />

@@ -17,6 +17,15 @@ export interface Translations {
   queroLer: string;
   lendo: string;
   sufixoNumero: string;
+  statistics: string;
+  readingStats: string;
+  readingGoals: string;
+  booksRead: string;
+  currentlyReading: string;
+  wantToRead: string;
+  totalPages: string;
+  averageRating: string;
+  favoriteBooks: string;
   fechar: string;
   recomendadoParaVoce: string;
   livrosRecomendados: string;
@@ -131,6 +140,15 @@ const translations: TranslationsDictionary = {
     queroLer: "Quero ler",
     lendo: "Lendo",
     sufixoNumero: "º",
+    statistics: "Estatísticas",
+    readingStats: "Estatísticas de Leitura",
+    readingGoals: "Metas de Leitura",
+    booksRead: "Livros Lidos",
+    currentlyReading: "Lendo Agora",
+    wantToRead: "Quero Ler",
+    totalPages: "Páginas Totais",
+    averageRating: "Avaliação Média",
+    favoriteBooks: "Livros Favoritos",
     fechar: "Fechar",
     recomendadoParaVoce: "Recomendado para você",
     livrosRecomendados: "Livros Recomendados",
@@ -243,6 +261,15 @@ const translations: TranslationsDictionary = {
     queroLer: "Quiero leer",
     lendo: "Leyendo",
     sufixoNumero: "º",
+    statistics: "Estadísticas",
+    readingStats: "Estadísticas de Lectura",
+    readingGoals: "Objetivos de Lectura",
+    booksRead: "Libros Leídos",
+    currentlyReading: "Leyendo Ahora",
+    wantToRead: "Quiero Leer",
+    totalPages: "Páginas Totales",
+    averageRating: "Calificación Promedio",
+    favoriteBooks: "Libros Favoritos",
     fechar: "Cerrar",
     recomendadoParaVoce: "Recomendado para ti",
     livrosRecomendados: "Libros Recomendados",
@@ -355,6 +382,15 @@ const translations: TranslationsDictionary = {
     queroLer: "Je veux lire",
     lendo: "En train de lire",
     sufixoNumero: "º",
+    statistics: "Statistiques",
+    readingStats: "Statistiques de Lecture",
+    readingGoals: "Objectifs de Lecture",
+    booksRead: "Livres Lus",
+    currentlyReading: "En Train de Lire",
+    wantToRead: "Je Veux Lire",
+    totalPages: "Pages Totales",
+    averageRating: "Note Moyenne",
+    favoriteBooks: "Livres Favoris",
     fechar: "Fermer",
     recomendadoParaVoce: "Recommandé pour vous",
     livrosRecomendados: "Livres Recommandés",
@@ -467,6 +503,15 @@ const translations: TranslationsDictionary = {
     queroLer: "Want to Read",
     lendo: "Reading",
     sufixoNumero: "th",
+    statistics: "Statistics",
+    readingStats: "Reading Statistics",
+    readingGoals: "Reading Goals",
+    booksRead: "Books Read",
+    currentlyReading: "Currently Reading",
+    wantToRead: "Want to Read",
+    totalPages: "Total Pages",
+    averageRating: "Average Rating",
+    favoriteBooks: "Favorite Books",
     fechar: "Close",
     recomendadoParaVoce: "Recommended for you",
     livrosRecomendados: "Recommended Books",

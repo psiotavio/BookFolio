@@ -4,9 +4,11 @@ const API_KEY = "AIzaSyBkHfmfEHDKGhGrkk_J0LYNeTCy2HKwV2c";  // Utilize sua chave
 const API_URL = "https://www.googleapis.com/books/v1/volumes";
 
 // Função para melhorar a qualidade da imagem de capa
-const upscaleGoogleBooksCoverImage = async (googleBooksImageLink: string): Promise<string | null> => {
+const upscaleGoogleBooksCoverImage = async (googleBooksImageLink: string): Promise<string> => {
   try {
-    const imageCandidateUrl = googleBooksImageLink.replace(/zoom=\d/, "zoom=10");
+    // Converte HTTP para HTTPS e melhora o zoom
+    let imageCandidateUrl = googleBooksImageLink.replace(/^http:/, 'https:');
+    imageCandidateUrl = imageCandidateUrl.replace(/zoom=\d/, "zoom=10");
     
     const response = await fetch(imageCandidateUrl, { method: 'HEAD' });
     
@@ -17,10 +19,14 @@ const upscaleGoogleBooksCoverImage = async (googleBooksImageLink: string): Promi
         return imageCandidateUrl;
       }
     }
-    return null;
+    // Se a verificação falhou ou é placeholder, retorna a imagem original otimizada
+    return googleBooksImageLink.replace(/^http:/, 'https:');
   } catch (error) {
     console.error("Erro ao verificar qualidade da imagem:", error);
-    return null;
+    // Em caso de erro de rede, retorna a imagem original otimizada ao invés de null
+    // Isso evita rejeitar livros válidos por problemas de conexão
+    // Garante que sempre retorna HTTPS
+    return googleBooksImageLink.replace(/^http:/, 'https:');
   }
 };
 
@@ -28,8 +34,11 @@ const upscaleGoogleBooksCoverImage = async (googleBooksImageLink: string): Promi
 const optimizeImageUrl = (url: string): string => {
   if (!url) return url;
   
+  // Converte HTTP para HTTPS (necessário para React Native)
+  let optimizedUrl = url.replace(/^http:/, 'https:');
+  
   // Substitui zoom=1 por zoom=6 para máxima qualidade
-  let optimizedUrl = url.replace(/zoom=\d+/g, 'zoom=6');
+  optimizedUrl = optimizedUrl.replace(/zoom=\d+/g, 'zoom=6');
   
   // Se não tem parâmetro zoom, adiciona zoom=6
   if (!optimizedUrl.includes('zoom=')) {
@@ -258,12 +267,7 @@ const fetchBookDetails = async (bookTitle: string, language: string = "pt-BR"): 
 
       // Tentar melhorar a qualidade da imagem
       const upscaledImage = await upscaleGoogleBooksCoverImage(bestBookCoverImage);
-      if (!upscaledImage) {
-        console.log(`   ❌ REJEITADO: Imagem de baixa qualidade (placeholder detectado)`);
-        continue;
-      }
-
-      console.log(`   ✅ Imagem melhorada: ${upscaledImage}`);
+      console.log(`   ✅ Imagem processada: ${upscaledImage}`);
 
       const book: Livro = {
         id: item.id,
@@ -378,12 +382,7 @@ const fetchBookRecommendations = async (authors: string[], language: string = "p
 
       // Tentar melhorar a qualidade da imagem
       const upscaledImage = await upscaleGoogleBooksCoverImage(bestBookCoverImage);
-      if (!upscaledImage) {
-        console.log(`   ❌ REJEITADO: Imagem de baixa qualidade (placeholder detectado)`);
-        continue;
-      }
-
-      console.log(`   ✅ Imagem melhorada: ${upscaledImage}`);
+      console.log(`   ✅ Imagem processada: ${upscaledImage}`);
 
       const book: Livro = {
         id: item.id,
@@ -488,9 +487,6 @@ const fetchBookRecommendationsByAuthor = async (
 
             // Tentar melhorar a qualidade da imagem
             const upscaledImage = await upscaleGoogleBooksCoverImage(bestBookCoverImage);
-            if (!upscaledImage) {
-              continue;
-            }
 
             const book: Livro = {
               id: item.id,
@@ -564,9 +560,6 @@ const fetchBookRecommendationsByAuthor = async (
 
                 // Tentar melhorar a qualidade da imagem
                 const upscaledImage = await upscaleGoogleBooksCoverImage(bestBookCoverImage);
-                if (!upscaledImage) {
-                  continue;
-                }
 
                 const book: Livro = {
                   id: item.id,
@@ -641,9 +634,6 @@ const fetchBookRecommendationsByAuthor = async (
 
               // Tentar melhorar a qualidade da imagem
               const upscaledImage = await upscaleGoogleBooksCoverImage(bestBookCoverImage);
-              if (!upscaledImage) {
-                continue;
-              }
 
               const book: Livro = {
                 id: item.id,
@@ -736,12 +726,7 @@ const getBookById = async (bookId: string): Promise<Livro | null> => {
 
     // Tenta melhorar a qualidade da imagem se disponível
     const upscaledGoogleImageBook = await upscaleGoogleBooksCoverImage(bestBookCoverImage);
-    if (!upscaledGoogleImageBook) {
-      console.error(`❌ Não foi possível melhorar a qualidade da imagem para o livro com ID ${bookId}`);
-      return null;
-    }
-
-    console.log(`✅ Imagem melhorada: ${upscaledGoogleImageBook}`);
+    console.log(`✅ Imagem processada: ${upscaledGoogleImageBook}`);
 
     const book: Livro = {
       id: bookId,

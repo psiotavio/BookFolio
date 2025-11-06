@@ -2,6 +2,7 @@ import React from "react";
 import {
   View,
   Image,
+  Text,
   StyleSheet,
   ImageStyle,
   ViewStyle,
@@ -19,6 +20,10 @@ type ImageContainerProps = {
 
 const CustomPhoto: React.FC<ImageContainerProps> = ({ uri, type }) => {
   const { theme } = useTheme();
+  const [imageError, setImageError] = React.useState(false);
+
+  // Converte HTTP para HTTPS se necessário
+  const safeUri = uri ? uri.replace(/^http:/, 'https:') : '';
 
   const getContainerStyle = (): ViewStyle => {
     switch (type) {
@@ -62,9 +67,28 @@ const CustomPhoto: React.FC<ImageContainerProps> = ({ uri, type }) => {
     }
   };
 
+  if (!safeUri || imageError) {
+    return (
+      <View style={[getContainerStyle(), { justifyContent: 'center', alignItems: 'center' }]}>
+        <Text style={{ color: theme.textSecondary, fontSize: 12 }}>Sem imagem</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={getContainerStyle()}>
-      <Image source={{ uri }} style={getImageStyle()} resizeMode="cover" />
+      <Image 
+        source={{ uri: safeUri }} 
+        style={getImageStyle()} 
+        resizeMode="cover"
+        onError={(error) => {
+          console.error('Erro ao carregar imagem:', safeUri, error.nativeEvent.error);
+          setImageError(true);
+        }}
+        onLoad={() => {
+          console.log('✅ Imagem carregada com sucesso:', safeUri);
+        }}
+      />
     </View>
   );
 };
